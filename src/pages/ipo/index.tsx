@@ -189,7 +189,7 @@ function Ipo() {
                 <div className=" text-center my-2 py-2">
                     <p>
                         {
-                            isJoined || new BigNumber(leave3).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>10000 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                            isJoined || new BigNumber(leave1).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>10000 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
                             onClick={()=>{
                                 sendJoin(0)
                             }}
@@ -217,7 +217,7 @@ function Ipo() {
                 <div className=" text-center my-2 py-2">
                     <p>
                         {
-                            isJoined || new BigNumber(leave3).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>5000 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                            isJoined || new BigNumber(leave2).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>5000 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
                             onClick={()=>{
                                 sendJoin(1)
                             }}
