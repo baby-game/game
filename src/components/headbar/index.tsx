@@ -69,7 +69,7 @@ function HeadBar() {
               src={walletIcon}
               alt=''
             />
-            <span className=' leading-8 font-bold mainTextColor text-xl'>BabyGame</span>
+            <span className=' leading-8 font-bold mainTextColor text-xl'>Baby Plan</span>
           </div>
         </div>
 
