@@ -256,7 +256,7 @@ function Ipo() {
             </div>
 
             <div className=' pt-5 mx-3 pb-10'>
-                <p className=' indent-8 text-gray-400'>同一账户只能获得其中一个公会名额，熔断重启后公会资格仍保留</p>
+                <p className=' indent-8 text-gray-400'>同一账户只能获得其中一个公会名额，熔断重生后公会资格仍保留</p>
             </div>
         </div>
     )
