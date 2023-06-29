@@ -184,7 +184,7 @@ function Ipo() {
                     </div>
                 </div>
                 <div>
-                    <p className='text-gray-400'>获赠S5级别，享受超级公会专项奖等四重收益</p>
+                    <p className='text-gray-400'>获赠S5级别，享受创世公会专项奖等四重收益</p>
                 </div>
                 <div className=" text-center my-2 py-2">
                     <p>

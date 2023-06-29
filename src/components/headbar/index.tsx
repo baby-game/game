@@ -1,6 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import { formatAccount } from '../../utils/formatting';
 import walletIcon from '../../image/wallet.png'
+import logo from '../../image/logo.png'
 
 declare const window: Window & { ethereum: any, web3: any };
 
@@ -63,10 +64,10 @@ function HeadBar() {
         <div className='logo'>
           <div className=' flex'>
             <img
-              className=' mr-2'
+              className=' mr-2 rounded-full'
               width={30}
               height={30}
-              src={walletIcon}
+              src={logo}
               alt=''
             />
             <span className=' leading-8 font-bold mainTextColor text-xl'>Baby Plan</span>

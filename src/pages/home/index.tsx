@@ -1,13 +1,19 @@
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import logo from '../../image/logo.png'
 
 export default function Home({ }) {
   const navigate = useNavigate();
 
   return <div className=" main">
+    <div className=" pt-32 pb-10 text-center  "  >
+      <h3 className="indent-8 font-bold text-2xl leading-10  mainTextColor flex " style={{
+        width: "230px",
+        margin: "0 auto"
+      }}>
+        BABY社交道
+      <img className=" rounded-full w-10 h-10  ml-3" src={logo} alt="" />
 
-    <div className=" text-center pt-32 pb-10">
-      <h3 className="indent-8 font-bold text-2xl mainTextColor">BABY社交道(logo)</h3>
+      </h3>
     </div>
 
     <div className=" mx-3 pb-10 text-gray-400">
@@ -25,7 +31,7 @@ export default function Home({ }) {
           onClick={() => {
             navigate("/ipo")
           }}
-        >工会申请 </span>
+        >公会申请 </span>
       </p>
     </div>
   </div>
