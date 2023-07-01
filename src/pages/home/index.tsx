@@ -7,14 +7,14 @@ export default function Home({ }) {
   return <div className=" main">
     <div className=" pt-32 pb-10 text-center  "  >
       <div className=" flex " style={{
-        width:"220px",
+        width:"150px",
         margin:"0 auto"
       }}>
         <img className=" rounded-full w-16 h-16  " src={logo} alt="" />
         <span className=" font-bold text-2xl mainTextColor ml-3 " style={{
           lineHeight: "64px",
-          width: "140px"
-        }}>BABY社交道</span>
+          width: "70px"
+        }}>BABY</span>
       </div>
     </div>
 
