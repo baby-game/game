@@ -6,14 +6,16 @@ export default function Home({ }) {
 
   return <div className=" main">
     <div className=" pt-32 pb-10 text-center  "  >
-      <h3 className="indent-8 font-bold text-2xl leading-10  mainTextColor flex " style={{
-        width: "230px",
-        margin: "0 auto"
+      <div className=" flex " style={{
+        width:"220px",
+        margin:"0 auto"
       }}>
-        BABY社交道
-      <img className=" rounded-full w-10 h-10  ml-3" src={logo} alt="" />
-
-      </h3>
+        <img className=" rounded-full w-16 h-16  " src={logo} alt="" />
+        <span className=" font-bold text-2xl mainTextColor ml-3 " style={{
+          lineHeight: "64px",
+          width: "140px"
+        }}>BABY社交道</span>
+      </div>
     </div>
 
     <div className=" mx-3 pb-10 text-gray-400">
