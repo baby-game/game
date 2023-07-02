@@ -84,6 +84,10 @@ function Ipo() {
         console.log("sendJoin sendAmount", sendAmount)
         setLoading(true)
 
+        setLoadingState("loading")
+        setLoadingText("交易打包中")
+    
+
         if (new BigNumber(allowance.toString()).isLessThan(toTokenValue(sendAmount, decimals))) {
             sendApprove(usdtErc20, ipoAddr, sendJoin, leaveType)
         } else {
@@ -95,9 +99,11 @@ function Ipo() {
 
                 console.log("sendJoin info", info, info.toString())
 
+                const gas: any = await ipoContract?.estimateGas.join(leaveType, new BigNumber(info[1].toString()).multipliedBy(999).dividedBy(1000).toFixed(0).toString(), { from: account })
 
-                const gas: any = await ipoContract?.estimateGas.join(leaveType, new BigNumber(info, info[1].toString()).multipliedBy(999).dividedBy(1000).toString(), { from: account })
-                const response = await ipoContract?.join(leaveType, new BigNumber(info, info[1].toString()).multipliedBy(999).dividedBy(1000).toString(), {
+                console.log("sendJoin gas", gas)
+
+                const response = await ipoContract?.join(leaveType, new BigNumber( info[1].toString()).multipliedBy(999).dividedBy(1000).toFixed(0).toString(), {
                     from: account,
                     gasLimit: gas.mul(105).div(100)
                 });
@@ -123,6 +129,9 @@ function Ipo() {
                     }
                 }
             } catch (err: any) {
+
+                console.log("sendJoin err", err)
+
                 setLoadingState("error")
                 setLoadingText("交易失败")
                 setTimeout(() => {
