@@ -76,9 +76,7 @@ function Ipo() {
         const allowance: any = await usdtErc20?.allowance(account, ipoAddr);
 
         const decimals: any = await usdtErc20?.decimals()
-        let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(55).dividedBy(200).toString(), decimals), [usdtAddr, sodAddr])
-
-        console.log("sendJoin info", info, info[1].toString())
+       
         console.log("sendJoin decimals", decimals)
         console.log("sendJoin allowance", allowance.toString())
         console.log("sendJoin sendAmount", sendAmount)
