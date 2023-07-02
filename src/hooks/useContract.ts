@@ -6,6 +6,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
 import ERC20_ABI from '../abi/ERC20.json';
 import IPO_ABI from '../abi/ipoABI.json';
+import RouterABI from '../abi/LiquidityStakeRouter.json';
 
 
 export function isAddress(value: any): string | false {
@@ -65,4 +66,11 @@ export function useERC20(tokenAddress: string) {
 
 export function useIpoContract(address: string) {
     return useContract(address, IPO_ABI);
+}
+
+export function useRouterContract(address?: string) {
+    if (!address) {
+        address = process.env.REACT_APP_ROUTER + "";
+    }
+    return useContract(address, RouterABI);
 }

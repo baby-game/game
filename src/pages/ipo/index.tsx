@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button'
-import { getProviderOrSigner, useIpoContract } from '../../hooks/useContract'
+import { getProviderOrSigner, useIpoContract, useRouterContract } from '../../hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 import { MAX_UNIT256 } from '../../constants';
@@ -13,9 +13,12 @@ const ethers = require('ethers');
 
 const ipoAddr = process.env.REACT_APP_CONTRACT_IPO + ""
 const usdtAddr = process.env.REACT_APP_TOKEN_USDT + ""
+const sodAddr = process.env.REACT_APP_TOKEN_SOD + ""
 function Ipo() {
 
     const ipoContract = useIpoContract(ipoAddr)
+    const routerContract = useRouterContract();
+
     const { account, library } = useWeb3React()
 
     const [isJoined, setIsJoined] = useState<boolean>(false);
@@ -60,7 +63,7 @@ function Ipo() {
 
     const sendJoin = async (leaveType: number) => {
         console.log("sendJoin leaveType", leaveType)
-        let sendAmount
+        let sendAmount = 0
         if (leaveType == 0) {
             sendAmount = 10000
         } else if (leaveType == 1) {
@@ -73,7 +76,9 @@ function Ipo() {
         const allowance: any = await usdtErc20?.allowance(account, ipoAddr);
 
         const decimals: any = await usdtErc20?.decimals()
+        let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(55).dividedBy(200).toString(), decimals), [usdtAddr, sodAddr])
 
+        console.log("sendJoin info", info, info[1].toString())
         console.log("sendJoin decimals", decimals)
         console.log("sendJoin allowance", allowance.toString())
         console.log("sendJoin sendAmount", sendAmount)
@@ -85,8 +90,14 @@ function Ipo() {
             setLoadingState("loading")
             setLoadingText("交易打包中")
             try {
-                const gas: any = await ipoContract?.estimateGas.join(leaveType, { from: account })
-                const response = await ipoContract?.join(leaveType, {
+
+                let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(55).dividedBy(200).toString(), decimals), [usdtAddr, sodAddr])
+
+                console.log("sendJoin info", info, info.toString())
+
+
+                const gas: any = await ipoContract?.estimateGas.join(leaveType, new BigNumber(info, info[1].toString()).multipliedBy(999).dividedBy(1000).toString(), { from: account })
+                const response = await ipoContract?.join(leaveType, new BigNumber(info, info[1].toString()).multipliedBy(999).dividedBy(1000).toString(), {
                     from: account,
                     gasLimit: gas.mul(105).div(100)
                 });
@@ -190,9 +201,9 @@ function Ipo() {
                     <p>
                         {
                             isJoined || new BigNumber(leave1).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>10000 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-                            onClick={()=>{
-                                sendJoin(0)
-                            }}
+                                onClick={() => {
+                                    sendJoin(0)
+                                }}
                             >10000 USDT </span>
                         }
                     </p>
@@ -218,9 +229,9 @@ function Ipo() {
                     <p>
                         {
                             isJoined || new BigNumber(leave2).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>5000 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-                            onClick={()=>{
-                                sendJoin(1)
-                            }}
+                                onClick={() => {
+                                    sendJoin(1)
+                                }}
                             >5000 USDT </span>
                         }
                     </p>
@@ -246,9 +257,9 @@ function Ipo() {
                     <p>
                         {
                             isJoined || new BigNumber(leave3).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>2000 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-                            onClick={()=>{
-                                sendJoin(2)
-                            }}
+                                onClick={() => {
+                                    sendJoin(2)
+                                }}
                             >2000 USDT </span>
                         }
                     </p>
