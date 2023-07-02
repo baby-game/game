@@ -97,11 +97,10 @@ function Ipo() {
 
                 console.log("sendJoin info", info, info.toString())
 
-                const gas: any = await ipoContract?.estimateGas.join(leaveType, new BigNumber(info[1].toString()).multipliedBy(999).dividedBy(1000).toFixed(0).toString(), { from: account })
-
+                const gas: any = await ipoContract?.estimateGas.join(leaveType, info[1].toString(), { from: account })
                 console.log("sendJoin gas", gas)
 
-                const response = await ipoContract?.join(leaveType, new BigNumber( info[1].toString()).multipliedBy(999).dividedBy(1000).toFixed(0).toString(), {
+                const response = await ipoContract?.join(leaveType, info[1].toString(), {
                     from: account,
                     gasLimit: gas.mul(105).div(100)
                 });
