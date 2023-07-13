@@ -133,6 +133,7 @@ function Plan() {
           if (receipt.status && receipt.status == 1) {
             init()
             setJoinPop(false)
+            setSendAmount("")
             setLoadingState("success")
             setLoadingText("交易成功")
             setTimeout(() => {
