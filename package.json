@@ -8,6 +8,7 @@
     "@emotion/styled": "^11.11.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
+    "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",

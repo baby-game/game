@@ -2,6 +2,17 @@ import { useWeb3React } from '@web3-react/core';
 import { formatAccount } from '../../utils/formatting';
 import walletIcon from '../../image/wallet.png'
 import logo from '../../image/logo.png'
+import { communityIcon, homeIcon, menuIcon, planIcon, wealthIcon } from '../../image';
+import Drawer from '@mui/material/Drawer';
+import { useState } from 'react';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
+import ListSubheader from '@mui/material/ListSubheader';
+import { useNavigate } from 'react-router-dom';
 
 declare const window: Window & { ethereum: any, web3: any };
 
@@ -13,6 +24,8 @@ interface IHeadBar {
 
 function HeadBar() {
   const { account } = useWeb3React();
+  const [menuOpen, setMenuOpen] = useState<boolean>(false)
+  const navigate = useNavigate();
 
   const connectWallet = () => {
     window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: process.env.REACT_APP_NET_CHAIN_ID }] })
@@ -58,18 +71,99 @@ function HeadBar() {
       })
   }
 
+  const navLink = (url: string) => {
+    setMenuOpen(false)
+    navigate(url)
+  }
+
   return (
-    <div className='bg-[rgba(20, 253, 0, 0.4220281862745098)] border-b border-gray-300 z-50 backdrop-blur-xl fixed top-0 left-0 w-full h-16 px-4'>
+    <div className=' border-b border-gray-300 z-50 backdrop-blur-xl fixed top-0 left-0 w-full h-16 px-4'>
       <div className='container text-black flex justify-between items-center mx-auto h-full'>
         <div className='logo'>
           <div className=' flex'>
             <img
-              className=' mr-2 rounded-full'
+              className=' mr-2 '
               width={30}
               height={30}
-              src={logo}
+              src={menuIcon}
+              onClick={() => {
+                setMenuOpen(true)
+              }}
               alt=''
             />
+            <Drawer
+              anchor={"left"}
+              open={menuOpen}
+              onClose={() => {
+                setMenuOpen(false)
+              }}
+            >
+              <List
+                sx={{ width: '210px', maxWidth: 360, bgcolor: 'background.paper' }}
+                component="nav"
+                aria-labelledby="nested-list-subheader"
+                subheader={
+                  <ListSubheader className=' flex py-3 border-b' component="div" id="nested-list-subheader">
+                    <img
+                      className=' mr-2 rounded-full '
+                      width={30}
+                      height={30}
+                      src={logo}
+                      alt=''
+                    />
+                    <span className=' leading-8 font-bold mainTextColor text-xl'>Baby Plan</span>
+                  </ListSubheader>
+                }
+              >
+                <ListItemButton onClick={() => {
+                  navLink("/home")
+
+                }}>
+                  <img
+                    width={20}
+                    height={20}
+                    src={homeIcon}
+                    alt=''
+                  />
+                  <ListItemText className=' ml-2 ' primary="首页" />
+                </ListItemButton>
+
+                <ListItemButton onClick={() => {
+                  navLink("/plan")
+                }}>
+                  <img
+                    width={20}
+                    height={20}
+                    src={planIcon}
+                    alt=''
+                  />
+                  <ListItemText className=' ml-2 ' primary="宝贝计划" />
+                </ListItemButton>
+                <ListItemButton onClick={() => {
+                  navLink("/community")
+                }}>
+                  <img
+                    width={20}
+                    height={20}
+                    src={communityIcon}
+                    alt=''
+                  />
+                  <ListItemText className=' ml-2 ' primary="我的社区" />
+                </ListItemButton>
+                <ListItemButton onClick={() => {
+                  navLink("/wealth")
+                }}>
+                  <img
+                    width={20}
+                    height={20}
+                    src={wealthIcon}
+                    alt=''
+                  />
+                  <ListItemText className=' ml-2 ' primary="重生财富 " />
+                </ListItemButton>
+
+              </List>
+            </Drawer>
             <span className=' leading-8 font-bold mainTextColor text-xl'>Baby Plan</span>
           </div>
         </div>

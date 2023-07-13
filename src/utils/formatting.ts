@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { MAX_UNIT256 } from "../constants";
 
 export function formatAccount(value: any, lenStart: number, lenEnd: number) {
     if (!value) { return ""; }
@@ -30,19 +31,12 @@ export const verify = (value: any) => {
 };
 
 export const formattingDate = (timestamp: any) => {
-    console.log("formattingDate",new Date().getTime(),timestamp)
-
-    const date = new Date(Number(timestamp.toString()) * 1000)
-    if(new BigNumber(timestamp).isLessThan(new Date().getTime())){
-
-        return  "可领取"
+    if (new BigNumber(timestamp.toString()).isEqualTo(MAX_UNIT256)) {
+        return "自动续期"
     }
 
+    const date = new Date(Number(timestamp.toString()) * 1000)
     const year = date.getFullYear()
-    // const month = date.getMonth() + 1
-    // const day = date.getDate()
-
-
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
     const hours = ('0' + date.getHours()).slice(-2);

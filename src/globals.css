@@ -23,3 +23,17 @@
 .borderMain {
     border-color: rgb(60, 125, 104);
 }
+/* border-2 px-5 py-1 rounded-full   borderMain text-white' */
+.selectAmount{
+    border: 2px solid rgb(60, 125, 104);
+    background-color: rgb(60, 125, 104);
+    padding: 4px 12px;
+    color: white;
+    border-radius: 100px;
+}
+
+.unSelectAmount{
+    border: 2px solid rgb(60, 125, 104);
+    padding: 4px 12px;
+    border-radius: 100px;
+}

@@ -7,6 +7,7 @@ import { Contract } from '@ethersproject/contracts'
 import ERC20_ABI from '../abi/ERC20.json';
 import IPO_ABI from '../abi/ipoABI.json';
 import RouterABI from '../abi/LiquidityStakeRouter.json';
+import BabyABI from '../abi/IBabyGame.json'
 
 
 export function isAddress(value: any): string | false {
@@ -73,4 +74,8 @@ export function useRouterContract(address?: string) {
         address = process.env.REACT_APP_ROUTER + "";
     }
     return useContract(address, RouterABI);
+}
+
+export function useBabyGameContract(address: string) {
+    return useContract(address, BabyABI);
 }

@@ -9,8 +9,8 @@ import loadingIcon from '../../image/loading.png'
 interface OpenStatus {
     open: boolean,
     setOpen: Function,
-    loadingText:string,
-    loadingState:string
+    loadingText: string,
+    loadingState: string
 }
 
 export default function TipPop({ open, setOpen, loadingText, loadingState }: OpenStatus) {
@@ -29,21 +29,28 @@ export default function TipPop({ open, setOpen, loadingText, loadingState }: Ope
         aria-describedby="alert-dialog-description"
     >
         <DialogContent>
-            <Grid container className=' mb-3 flex'>
+            <div >
                 {
-                    loadingState == "loading" && <img className=' w-10 animate-spin' src={loadingIcon} alt="" />
+                    loadingState == "loading" && <img style={{
+                        margin: "0 auto"
+                    }}  className=' w-8 h-8 animate-spin' src={loadingIcon} alt="" />
                 }
 
                 {
-                    loadingState == "success" && <img className=' w-10' src={successIcon} alt="" />
+                    loadingState == "success" && <img style={{
+                        margin: "0 auto"
+                    }}  className=' w-8 h-8' src={successIcon} alt="" />
                 }
 
                 {
-                    loadingState == "error" && <img className=' w-10' src={FailIcon} alt="" />
+                    loadingState == "error" && <img style={{
+                        margin: "0 auto"
+                    }} className=' w-8 h-8' src={FailIcon} alt="" />
                 }
-
-                <p className=' ml-3 flex-1 leading-10'>{loadingText}  </p>
-            </Grid>
+            </div>
+            <div >
+                <p className='break-words text-sm text-center'>{loadingText}  </p>
+            </div>
         </DialogContent>
     </Dialog>
 }
