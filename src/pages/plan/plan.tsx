@@ -544,8 +544,12 @@ function Plan() {
         <div className=' flex'>
           <div className='w-1/2'>
             <div>
-              <p className=' text-gray-400'>30天合约做市</p>
-              <p className=' font-bold text-xl break-words whitespace-normal'>{fromTokenValue(accountBalance, 18, 2)}</p>
+              <p style={{
+              lineHeight: "50px"
+            }} className=' text-gray-400'>30天合约做市</p>
+              <p className=' font-bold text-xl break-words whitespace-normal'>
+                {/* {fromTokenValue(accountBalance, 18, 2)} */}
+                </p>
             </div>
           </div>
           <div className='w-1/2'>
@@ -578,8 +582,12 @@ function Plan() {
         <div className=' flex'>
           <div className='w-1/2'>
             <div>
-              <p className=' text-gray-400'>90天合约做市</p>
-              <p className=' font-bold text-xl break-words whitespace-normal'>{fromTokenValue(accountBalance, 18, 2)}</p>
+              <p style={{
+              lineHeight: "50px"
+            }} className=' text-gray-400'>90天合约做市</p>
+              <p className=' font-bold text-xl break-words whitespace-normal'>
+                {/* {fromTokenValue(accountBalance, 18, 2)} */}
+                </p>
             </div>
           </div>
           <div className='w-1/2'>
@@ -612,8 +620,12 @@ function Plan() {
         <div className=' flex'>
           <div className='w-1/2'>
             <div>
-              <p className=' text-gray-400'>180天合约做市</p>
-              <p className=' font-bold text-xl break-words whitespace-normal'>{fromTokenValue(accountBalance, 18, 2)}</p>
+              <p style={{
+              lineHeight: "50px"
+            }} className=' text-gray-400'>180天合约做市</p>
+              <p className=' font-bold text-xl break-words whitespace-normal'>
+                {/* {fromTokenValue(accountBalance, 18, 2)} */}
+              </p>
             </div>
           </div>
           <div className='w-1/2'>
@@ -707,7 +719,8 @@ function Plan() {
         }} >
           {
             JoinItems && JoinItems.map((item: any) => {
-              return <div className=' text-xs rounded-md border p-1 m-1 borderMain' key={item.createTime.toString()}>
+              // return <div className=' text-xs rounded-md border p-1 m-1 borderMain' key={item.createTime.toString()}>
+              return <div className={new BigNumber(new Date().getTime()).isGreaterThan(item.dueTime.toString())?"text-xs rounded-md border p-1 m-1 ":"text-xs rounded-md border p-1 m-1 borderMain"} key={item.createTime.toString()}>
                 <div className=' flex'>
                   <div className=' w-1/3'>
                     <p>本金: <span className='mainTextColor'>{fromTokenValue(item.value, 18, 3)}</span></p>
