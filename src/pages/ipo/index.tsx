@@ -7,6 +7,7 @@ import ERC20ABI from '../../abi/ERC20.json';
 import BigNumber from "bignumber.js";
 import { toTokenValue } from '../../utils';
 import TipPop from '../../components/pop/TipPop';
+import HeadBar from '../../components/headbar';
 
 const ethers = require('ethers');
 
@@ -75,7 +76,7 @@ function Ipo() {
         const allowance: any = await usdtErc20?.allowance(account, ipoAddr);
 
         const decimals: any = await usdtErc20?.decimals()
-       
+
         console.log("sendJoin decimals", decimals)
         console.log("sendJoin allowance", allowance.toString())
         console.log("sendJoin sendAmount", sendAmount)
@@ -83,7 +84,7 @@ function Ipo() {
 
         setLoadingState("loading")
         setLoadingText("交易打包中")
-    
+
 
         if (new BigNumber(allowance.toString()).isLessThan(toTokenValue(sendAmount, decimals))) {
             sendApprove(usdtErc20, ipoAddr, sendJoin, leaveType)
@@ -180,7 +181,8 @@ function Ipo() {
     }
 
 
-    return (
+    return (<>
+        <HeadBar />
         <div className='main'>
             <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
             <div className=' pt-32  mx-3 pb-10'>
@@ -275,6 +277,8 @@ function Ipo() {
                 <p className=' indent-8 text-gray-400'>同一账户只能获得其中一个公会名额，熔断重生后公会资格仍保留</p>
             </div>
         </div>
+    </>
+
     )
 }
 

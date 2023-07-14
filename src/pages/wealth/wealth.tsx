@@ -2,6 +2,7 @@ import { menuIcon } from '../../image'
 import { useBabyGameContract } from '../../hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
+import HeadBar from '../../components/headbar'
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 
 function Wealth() {
@@ -21,7 +22,8 @@ function Wealth() {
     }
 
 
-    return (
+    return (<>
+        <HeadBar />
         <div className=" main">
             <div className=' pt-32  mx-3 pb-10'>
                 {/* <h3 className="indent-8 font-bold text-xl mainTextColor">重生财富</h3> */}
@@ -74,6 +76,8 @@ function Wealth() {
                 </p>
             </div>
         </div>
+    </>
+
     )
 }
 

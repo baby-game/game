@@ -2,7 +2,7 @@ import { Dialog, DialogContent, FormControlLabel, InputAdornment, Radio, RadioGr
 import React, { useEffect, useState } from 'react'
 import { getProviderOrSigner, useBabyGameContract } from '../../hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
-import { formattingDate, verify } from '../../utils/formatting'
+import { ItemReward, formattingDate, verify } from '../../utils/formatting'
 import { fromTokenValue, toTokenValue } from '../../utils'
 import TokenBalance from '../../components/token/TokenBalance'
 import TipPop from '../../components/pop/TipPop'
@@ -10,11 +10,14 @@ import BigNumber from "bignumber.js";
 import { MAX_UNIT256 } from '../../constants'
 import { Contract } from '@ethersproject/contracts'
 import ERC20ABI from '../../abi/ERC20.json';
+import HeadBar from '../../components/headbar'
 
 const ethers = require('ethers');
 
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 const usdtAddr = process.env.REACT_APP_TOKEN_USDT + ""
+const dayTime = process.env.REACT_APP_DAY + ""
+
 
 
 function Plan() {
@@ -311,7 +314,8 @@ function Plan() {
     }
   }
 
-  return (
+  return (<>
+    <HeadBar />
     <div className=" main">
       <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
 
@@ -709,10 +713,10 @@ function Plan() {
                     <p>本金: <span className='mainTextColor'>{fromTokenValue(item.value, 18, 3)}</span></p>
                   </div>
                   <div className=' w-1/3'>
-                    <p>收益: <span className='mainTextColor'>{item.rate.toString()}</span></p>
+                    <p>收益: <span className='mainTextColor'>{fromTokenValue(ItemReward(item), 18, 2)}</span></p>
                   </div>
                   <div className=' w-1/3'>
-                    <p>锁定时长: <span className='mainTextColor'>{new BigNumber(item.perIssueTime.toString()).dividedBy(300).toFixed(0)}天</span></p>
+                    <p>锁定时长: <span className='mainTextColor'>{new BigNumber(item.perIssueTime.toString()).dividedBy(dayTime).toFixed(0)}天</span></p>
                   </div>
                 </div>
                 <div className=' flex'>
@@ -729,6 +733,8 @@ function Plan() {
         </div>
       </div>
     </div>
+  </>
+
   )
 }
 

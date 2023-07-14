@@ -4,28 +4,38 @@ import walletIcon from '../../image/wallet.png'
 import logo from '../../image/logo.png'
 import { communityIcon, homeIcon, menuIcon, planIcon, wealthIcon } from '../../image';
 import Drawer from '@mui/material/Drawer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
 import ListSubheader from '@mui/material/ListSubheader';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useBabyGameContract } from '../../hooks/useContract';
+import { AddressZero } from '@ethersproject/constants'
+import TipPop from '../pop/TipPop';
 
 declare const window: Window & { ethereum: any, web3: any };
 
 
 interface IHeadBar {
-  mainColor?: string
+  setOpen?: Function
 }
 
+const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 
-function HeadBar() {
+function HeadBar({ setOpen }: IHeadBar) {
   const { account } = useWeb3React();
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const navigate = useNavigate();
+  const params = useParams()
+
+  const babyContract = useBabyGameContract(BabyGameAddr)
+  const [isTopInviter, setIsTopInviter] = useState<boolean>(false)
+
+  const [isHaveInviter, setIsHaveInviter] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingState, setLoadingState] = useState<string>("loading")
+  const [loadingText, setLoadingText] = useState<string>("")
 
   const connectWallet = () => {
     window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: process.env.REACT_APP_NET_CHAIN_ID }] })
@@ -71,13 +81,58 @@ function HeadBar() {
       })
   }
 
+  useEffect(() => {
+    init()
+  }, [window.location.href,account])
+
+  const init = async () => {
+    console.log("init1")
+    
+    let isTopInviterData = await babyContract?.isTopInviter(account)
+    setIsTopInviter(isTopInviterData)
+    let data = await babyContract?.getUser(account)
+    let isHaveInviterData
+    if (data.inviter == AddressZero) {
+      isHaveInviterData = false
+      setIsHaveInviter(false)
+    } else {
+      isHaveInviterData = true
+      setIsHaveInviter(true)
+    }
+
+    if (params.shareAddress) {
+    } else {
+      if (isTopInviterData || isHaveInviterData) {
+      } else {
+        console.log("init2")
+        navigate("/home")
+      }
+    }
+  }
+
   const navLink = (url: string) => {
     setMenuOpen(false)
-    navigate(url)
+    if (isHaveInviter || isTopInviter) {
+      navigate(url)
+    } else {
+      setLoading(true)
+      setLoadingState("error")
+      setLoadingText("请填写推荐人地址")
+      setTimeout(() => {
+        if (setOpen) setOpen(true)
+        setLoadingState("")
+        setLoading(false)
+      }, 2000);
+      return
+    }
   }
+
+
 
   return (
     <div className=' border-b border-gray-300 z-50 backdrop-blur-xl fixed top-0 left-0 w-full h-16 px-4'>
+      <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
+
       <div className='container text-black flex justify-between items-center mx-auto h-full'>
         <div className='logo'>
           <div className=' flex'>
@@ -117,7 +172,6 @@ function HeadBar() {
               >
                 <ListItemButton onClick={() => {
                   navLink("/home")
-
                 }}>
                   <img
                     width={20}
@@ -140,6 +194,7 @@ function HeadBar() {
                   <ListItemText className=' ml-2 ' primary="宝贝计划" />
                 </ListItemButton>
                 <ListItemButton onClick={() => {
+                 
                   navLink("/community")
                 }}>
                   <img

@@ -8,6 +8,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import TipPop from "../../components/pop/TipPop";
+import HeadBar from "../../components/headbar";
 const ethers = require('ethers');
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 
@@ -47,14 +48,6 @@ export default function Home({ }) {
   const init = () => {
     getUser()
   }
-
-  useEffect(() => {
-    if (isTopInviter || isHaveInviter) {
-      setSharePop(false)
-    } else {
-      setSharePop(true)
-    }
-  }, [isTopInviter, isHaveInviter])
 
   const getIsTopInviter = async () => {
     let data = await babyContract?.isTopInviter(account)
@@ -130,76 +123,78 @@ export default function Home({ }) {
 
 
 
-  return <div className=" main">
-    <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
+  return <>
+    <HeadBar setOpen={setSharePop} />
+    <div className=" main">
+      <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
 
-    <Dialog
-      open={sharePop}
-      onClose={() => {
-        setSharePop(false)
-      }}
-      sx={{
-        '& .MuiDialog-paper': {
-          width: 300,
-          maxWidth: '80%',
-          background: '#fff',
-        }
-      }}
-      maxWidth="md"
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogContent>
-        <div>
-          <p className=" font-bold text-xl mainTextColor mb-2  ">邀请链接</p>
+      <Dialog
+        open={sharePop}
+        onClose={() => {
+          setSharePop(false)
+        }}
+        sx={{
+          '& .MuiDialog-paper': {
+            width: 300,
+            maxWidth: '80%',
+            background: '#fff',
+          }
+        }}
+        maxWidth="md"
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <div>
+            <p className=" font-bold text-xl mainTextColor mb-2  ">邀请链接</p>
+          </div>
+          <TextField size='small'
+            style={{
+              width: "100%",
+              height: "16px !important"
+            }}
+            placeholder='填写推荐人地址'
+            value={shareAddr}
+            onChange={(e) => {
+              setShareAddr(e.target.value)
+            }}
+          />
+
+          <div className=" mt-5  text-center">
+            <p>
+              <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                onClick={() => {
+                  sendRegister()
+                }}
+              >确认</span>
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <div className=" pt-32 pb-10 text-center  "  >
+        <div className=" flex " style={{
+          width: "150px",
+          margin: "0 auto"
+        }}>
+          <img className=" rounded-full w-16 h-16  " src={logo} alt="" />
+          <span className=" font-bold text-2xl mainTextColor ml-3 " style={{
+            lineHeight: "64px",
+            width: "70px"
+          }}>BABY</span>
         </div>
-        <TextField size='small'
-          style={{
-            width: "100%",
-            height: "16px !important"
-          }}
-          placeholder='填写推荐人地址'
-          value={shareAddr}
-          onChange={(e) => {
-            setShareAddr(e.target.value)
-          }}
-        />
-
-        <div className=" mt-5  text-center">
-          <p>
-            <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-              onClick={() => {
-                sendRegister()
-              }}
-            >确认</span>
-          </p>
-        </div>
-      </DialogContent>
-    </Dialog>
-
-    <div className=" pt-32 pb-10 text-center  "  >
-      <div className=" flex " style={{
-        width: "150px",
-        margin: "0 auto"
-      }}>
-        <img className=" rounded-full w-16 h-16  " src={logo} alt="" />
-        <span className=" font-bold text-2xl mainTextColor ml-3 " style={{
-          lineHeight: "64px",
-          width: "70px"
-        }}>BABY</span>
       </div>
-    </div>
 
-    <div className=" mx-3 pb-10 text-gray-400">
-      <p className="indent-8 pb-3">
-        BABY Social DAO致力于Web3.0、Metaverse和NFT领域，让世界各地的区块链爱好者通过自动做市商竞赛寻找宝贝来重新定义资源融合。这样，区块链爱好者可以愉快地参与而不影响他们的日常生活和工作，同时获得相应的区块链财富。
-      </p>
-      <p className="indent-8">
-        基于SOD综合应用的唯一性和独特性，BABY Social DAO非常看好其发展前景，社区成员将通过宝贝计划获取SOD筹码。
-      </p>
-    </div>
+      <div className=" mx-3 pb-10 text-gray-400">
+        <p className="indent-8 pb-3">
+          BABY Social DAO致力于Web3.0、Metaverse和NFT领域，让世界各地的区块链爱好者通过自动做市商竞赛寻找宝贝来重新定义资源融合。这样，区块链爱好者可以愉快地参与而不影响他们的日常生活和工作，同时获得相应的区块链财富。
+        </p>
+        <p className="indent-8">
+          基于SOD综合应用的唯一性和独特性，BABY Social DAO非常看好其发展前景，社区成员将通过宝贝计划获取SOD筹码。
+        </p>
+      </div>
 
-    <div className=" text-center">
+      {/* <div className=" text-center">
       <p>
         <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
           onClick={() => {
@@ -207,42 +202,74 @@ export default function Home({ }) {
           }}
         >公会申请 </span>
       </p>
-    </div>
+    </div> */}
 
-    <div className=" text-center mt-5">
-      <p>
-        {
-          isHaveInviter || isTopInviter ? <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+      <div className=" text-center mt-5">
+        <p>
+          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
             onClick={() => {
-              navigate("/plan")
+              if (isHaveInviter || isTopInviter) {
+                navigate("/plan")
+              } else {
+                setLoading(true)
+                setLoadingState("error")
+                setLoadingText("请填写推荐人地址")
+                setTimeout(() => {
+                  setSharePop(true)
+                  setLoadingState("")
+                  setLoading(false)
+                }, 2000);
+                return
+              }
             }}
-          >宝贝计划 </span> : <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>宝贝计划 </span>
-        }
-      </p>
-    </div>
+          >宝贝计划 </span>
+        </p>
+      </div>
 
-    <div className=" text-center mt-5">
-      <p>
-        {
-          isHaveInviter || isTopInviter ? <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+      <div className=" text-center mt-5">
+        <p>
+          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
             onClick={() => {
-              navigate("/community")
+              if (isHaveInviter || isTopInviter) {
+                navigate("/community")
+              } else {
+                setLoading(true)
+                setLoadingState("error")
+                setLoadingText("请填写推荐人地址")
+                setTimeout(() => {
+                  setSharePop(true)
+                  setLoadingState("")
+                  setLoading(false)
+                }, 2000);
+                return
+              }
             }}
-          >我的社区 </span> : <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>我的社区 </span>
-        }
-      </p>
-    </div>
+          >我的社区 </span>
+        </p>
+      </div>
 
-    <div className=" text-center mt-5">
-      <p>
-        {
-          isHaveInviter || isTopInviter ? <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+      <div className=" text-center mt-5">
+        <p>
+          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
             onClick={() => {
-              navigate("/wealth")
+              if (isHaveInviter || isTopInviter) {
+                navigate("/wealth")
+              } else {
+                setLoading(true)
+                setLoadingState("error")
+                setLoadingText("请填写推荐人地址")
+                setTimeout(() => {
+                  setSharePop(true)
+                  setLoadingState("")
+                  setLoading(false)
+                }, 2000);
+                return
+              }
             }}
-          >重生财富 </span> : <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>重生财富 </span>
-        }
-      </p>
+          >重生财富 </span>
+        </p>
+      </div>
     </div>
-  </div>
+  </>
+
 }

@@ -12,13 +12,13 @@ import Community from './pages/ community/ community';
 
 
 function App() {
+  
   return (
     <div className="App ">
       <Web3ReactProvider getLibrary={getLibrary}>
         <Web3ReactManager>
           <Web3NetworkProvider>
             <HashRouter>
-              <HeadBar />
               <Routes >
                 <Route path="/" element={<Home />} />
                 <Route path="/home/:shareAddress?" element={<Home />} />

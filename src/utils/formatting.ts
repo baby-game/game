@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import { MAX_UNIT256 } from "../constants";
+const dayTime = process.env.REACT_APP_DAY + ""
 
 export function formatAccount(value: any, lenStart: number, lenEnd: number) {
     if (!value) { return ""; }
@@ -48,3 +49,23 @@ export const formattingDate = (timestamp: any) => {
     return formattedDate;
 }
 
+// struct JoinItem {
+//   uint value; //本金
+//   uint createTime; //开始时间 
+//   uint perIssueTime; // 锁定时长
+//   uint dueTime; //结束时间, 当为自动续期时,为uint最大值
+//   uint rate;
+// }
+export const ItemReward=(item:any)=>{
+    const timeNow = new Date().getTime()/1000
+    // console.log("first",timeNow,item.createTime.toString())
+    let days
+    if(new BigNumber(timeNow).isLessThan(item.dueTime.toString())){
+         days = new BigNumber(new BigNumber(timeNow).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0)
+        // console.log("days timeNow",days,timeNow,item.createTime.toString())
+    }else{
+         days = new BigNumber(new BigNumber(item.dueTime.toString()).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0)
+        // console.log("days",days)
+    }
+    return new BigNumber(item.value.toString()).multipliedBy(days).multipliedBy(item.rate.toString()).dividedBy(10000).toString()
+  }

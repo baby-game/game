@@ -10,6 +10,7 @@ import { fromTokenValue } from "../../utils";
 import copy from 'copy-to-clipboard';
 import { formatAccount } from "../../utils/formatting";
 import { copyIcon } from "../../image";
+import HeadBar from "../../components/headbar";
 
 const ethers = require('ethers');
 
@@ -133,7 +134,8 @@ function Community() {
     }
   }
 
-  return (
+  return (<>
+    <HeadBar />
     <div className=" main">
       <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
 
@@ -295,9 +297,10 @@ function Community() {
             </p>
           </div>
         </div>
-
       </div>
     </div>
+  </>
+
   )
 }
 
