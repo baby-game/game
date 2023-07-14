@@ -88,7 +88,7 @@ function Plan() {
     try {
       let data = await babyContract?.expiredItemsValue(account)
       console.log("getExpiredItemsValue", data)
-      setAccountBalance(data.amount.toSting())
+      setAccountBalance(data.amount.toString())
     } catch (error) {
       setAccountBalance("0")
     }
