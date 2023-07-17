@@ -83,11 +83,11 @@ function HeadBar({ setOpen }: IHeadBar) {
 
   useEffect(() => {
     init()
-  }, [window.location.href,account])
+  }, [window.location.href, account])
 
   const init = async () => {
     console.log("init1")
-    
+
     let isTopInviterData = await babyContract?.isTopInviter(account)
     setIsTopInviter(isTopInviterData)
     let data = await babyContract?.getUser(account)
@@ -104,8 +104,8 @@ function HeadBar({ setOpen }: IHeadBar) {
     } else {
       if (isTopInviterData || isHaveInviterData) {
       } else {
-        console.log("init2")
         navigate("/home")
+        if (setOpen) setOpen(true)
       }
     }
   }
@@ -115,14 +115,14 @@ function HeadBar({ setOpen }: IHeadBar) {
     if (isHaveInviter || isTopInviter) {
       navigate(url)
     } else {
-      setLoading(true)
-      setLoadingState("error")
-      setLoadingText("请填写推荐人地址")
-      setTimeout(() => {
-        if (setOpen) setOpen(true)
-        setLoadingState("")
-        setLoading(false)
-      }, 2000);
+      // setLoading(true)
+      // setLoadingState("error")
+      // setLoadingText("请填写推荐人地址")
+      // setTimeout(() => {
+      //   setLoadingState("")
+      //   setLoading(false)
+      // }, 2000);
+      if (setOpen) setOpen(true)
       return
     }
   }
@@ -194,7 +194,7 @@ function HeadBar({ setOpen }: IHeadBar) {
                   <ListItemText className=' ml-2 ' primary="宝贝计划" />
                 </ListItemButton>
                 <ListItemButton onClick={() => {
-                 
+
                   navLink("/community")
                 }}>
                   <img

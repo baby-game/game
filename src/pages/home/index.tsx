@@ -211,14 +211,7 @@ export default function Home({ }) {
               if (isHaveInviter || isTopInviter) {
                 navigate("/plan")
               } else {
-                setLoading(true)
-                setLoadingState("error")
-                setLoadingText("请填写推荐人地址")
-                setTimeout(() => {
-                  setSharePop(true)
-                  setLoadingState("")
-                  setLoading(false)
-                }, 2000);
+                setSharePop(true)
                 return
               }
             }}
@@ -233,14 +226,15 @@ export default function Home({ }) {
               if (isHaveInviter || isTopInviter) {
                 navigate("/community")
               } else {
-                setLoading(true)
-                setLoadingState("error")
-                setLoadingText("请填写推荐人地址")
-                setTimeout(() => {
-                  setSharePop(true)
-                  setLoadingState("")
-                  setLoading(false)
-                }, 2000);
+                // setLoading(true)
+                // setLoadingState("error")
+                // setLoadingText("请填写推荐人地址")
+                // setTimeout(() => {
+                //   setSharePop(true)
+                //   setLoadingState("")
+                //   setLoading(false)
+                // }, 2000);
+                setSharePop(true)
                 return
               }
             }}
@@ -255,14 +249,15 @@ export default function Home({ }) {
               if (isHaveInviter || isTopInviter) {
                 navigate("/wealth")
               } else {
-                setLoading(true)
-                setLoadingState("error")
-                setLoadingText("请填写推荐人地址")
-                setTimeout(() => {
-                  setSharePop(true)
-                  setLoadingState("")
-                  setLoading(false)
-                }, 2000);
+                // setLoading(true)
+                // setLoadingState("error")
+                // setLoadingText("请填写推荐人地址")
+                // setTimeout(() => {
+                //   setSharePop(true)
+                //   setLoadingState("")
+                //   setLoading(false)
+                // }, 2000);
+                setSharePop(true)
                 return
               }
             }}
