@@ -105,7 +105,6 @@ function HeadBar({ setOpen }: IHeadBar) {
       if (isTopInviterData || isHaveInviterData) {
       } else {
         navigate("/home")
-        if (setOpen) setOpen(true)
       }
     }
   }
