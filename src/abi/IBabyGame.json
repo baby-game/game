@@ -76,11 +76,6 @@
           },
           {
             "internalType": "uint256",
-            "name": "perIssueTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
             "name": "dueTime",
             "type": "uint256"
           },
@@ -167,11 +162,6 @@
             "type": "uint256"
           },
           {
-            "internalType": "bool",
-            "name": "reJoin",
-            "type": "bool"
-          },
-          {
             "internalType": "uint256",
             "name": "inviteAwardValue",
             "type": "uint256"
@@ -195,6 +185,16 @@
             "internalType": "address",
             "name": "maxZone",
             "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "inviteCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "inviteTotalCount",
+            "type": "uint256"
           }
         ],
         "internalType": "struct IStructs.User",
@@ -261,19 +261,6 @@
       }
     ],
     "name": "join",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "flag",
-        "type": "bool"
-      }
-    ],
-    "name": "reJoin",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

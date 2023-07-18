@@ -52,7 +52,6 @@ export const formattingDate = (timestamp: any) => {
 // struct JoinItem {
 //   uint value; //本金
 //   uint createTime; //开始时间 
-//   uint perIssueTime; // 锁定时长
 //   uint dueTime; //结束时间, 当为自动续期时,为uint最大值
 //   uint rate;
 // }
@@ -62,10 +61,8 @@ export const ItemReward=(item:any)=>{
     let days
     if(new BigNumber(timeNow).isLessThan(item.dueTime.toString())){
          days = new BigNumber(new BigNumber(timeNow).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0)
-        // console.log("days timeNow",days,timeNow,item.createTime.toString())
     }else{
          days = new BigNumber(new BigNumber(item.dueTime.toString()).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0)
-        // console.log("days",days)
     }
     return new BigNumber(item.value.toString()).multipliedBy(days).multipliedBy(item.rate.toString()).dividedBy(10000).toString()
   }

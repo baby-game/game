@@ -38,12 +38,17 @@ function Community() {
 
   //     uint inviteValue; //伞下总业绩
   //     address maxZone;  //大区
+  // uint inviteCount;  //推荐人数
+  //       uint inviteTotalCount; //社区人数
   // }
   const [inviteAwardValue, setInviteAwardValue] = useState<string>("0")
   const [scaleAwardValue, setScaleAwardValue] = useState<string>("0")
   const [contributionAwardValue, setContributionAwardValue] = useState<string>("0")
   const [inviteValue, setInviteValue] = useState<string>("0")
   const [value, setValue] = useState<string>("0")
+  const [inviteCount, setInviteCount] = useState<string>("0")
+  const [inviteTotalCount, setInviteTotalCount] = useState<string>("0")
+
 
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,10 +64,12 @@ function Community() {
     setContributionAwardValue(data.contributionAwardValue.toString())
     setInviteValue(data.inviteValue.toString())
     setValue(data.value.toString())
+    setInviteCount(data.inviteCount.toString())
+    setInviteTotalCount(data.inviteTotalCount.toString())
   }
   useEffect(() => {
     init()
-  }, [])
+  }, [account])
 
   const init = () => {
     getUser()
@@ -223,13 +230,13 @@ function Community() {
           <div >
             <p className=" text-gray-400 text-sm">
               推广用户:
-              <span className=" text-black text-base font-bold ml-2">111</span>
+              <span className=" text-black text-base font-bold ml-2">{inviteCount}</span>
             </p>
           </div>
           <div >
             <p className=" text-gray-400 text-sm">
               社区用户:
-              <span className=" text-black text-base font-bold ml-2">111</span>
+              <span className=" text-black text-base font-bold ml-2">{inviteTotalCount}</span>
             </p>
           </div>
         </div>

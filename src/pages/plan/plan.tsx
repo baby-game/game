@@ -35,7 +35,6 @@ function Plan() {
   // uint value; //有效
   // uint scale; //等级
   // uint lastSettleTime;
-  // bool reJoin; //是否自动入市, 也就是入金到期后自动续期
 
   // uint inviteAwardValue; //直推奖
   // uint scaleAwardValue;  //社区奖
@@ -51,12 +50,11 @@ function Plan() {
   const [joinWallet, setJoinWallet] = useState<string>("balance")
 
   const [baseDays, setBaseDays] = useState<number>(18)
-  const [reJoin, setReJoin] = useState<boolean>(false)
+  // const [reJoin, setReJoin] = useState<boolean>(false)
 
-  const [reJoinPop, setReJoinPop] = useState<boolean>(false)
+  // const [reJoinPop, setReJoinPop] = useState<boolean>(false)
 
   const [JoinItems, setJoinItems] = useState<any>([])
-
 
   useEffect(() => {
     init()
@@ -73,7 +71,7 @@ function Plan() {
   const getUser = async () => {
     let data = await babyContract?.getUser(account)
     console.log("getUser", data)
-    setReJoin(data.reJoin)
+    // setReJoin(data.reJoin)
   }
 
 
@@ -211,7 +209,8 @@ function Plan() {
     setLoading(true)
     setLoadingState("loading")
     setLoadingText("交易打包中")
-    let flag = !reJoin
+    // let flag = !reJoin
+    let flag = true
 
     try {
       const gas: any = await babyContract?.estimateGas.reJoin(flag, { from: account })
@@ -227,7 +226,7 @@ function Plan() {
       if (receipt !== null) {
         if (receipt.status && receipt.status == 1) {
           init()
-          setReJoinPop(false)
+          // setReJoinPop(false)
 
           setLoadingState("success")
           setLoadingText("交易成功")
@@ -286,7 +285,7 @@ function Plan() {
       if (receipt !== null) {
         if (receipt.status && receipt.status == 1) {
           init()
-          setReJoinPop(false)
+          // setReJoinPop(false)
 
           setLoadingState("success")
           setLoadingText("交易成功")
@@ -392,7 +391,7 @@ function Plan() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
+      {/* <Dialog
         open={reJoinPop}
         onClose={() => {
           setReJoinPop(false)
@@ -432,7 +431,7 @@ function Plan() {
             </p>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       <div className='bg-white rounded-2xl  mt-32  mx-3 mb-5 p-3'>
         <div className='flex text-center'>
@@ -654,7 +653,7 @@ function Plan() {
         </div>
       </div>
 
-      <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
+      {/* <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
         <div className=' flex'>
           <div className='w-1/2'>
             <FormControlLabel
@@ -702,11 +701,19 @@ function Plan() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
-        <div>
-          <p className='mainTextColor font-bold '>入金记录</p>
+        <div className=' flex'>
+              
+          <p className='mainTextColor font-bold w-1/2 '>入金记录</p>
+          <p className=' text-center w-1/2' >
+              <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                onClick={() => {
+                  sendTakeBack()
+                }}
+              >提现 </span>
+            </p>
         </div>
         {/* uint value; //本金
         uint createTime; //开始时间 
@@ -722,15 +729,15 @@ function Plan() {
               // return <div className=' text-xs rounded-md border p-1 m-1 borderMain' key={item.createTime.toString()}>
               return <div className={new BigNumber(new Date().getTime()).isGreaterThan(item.dueTime.toString()) ? "text-xs rounded-md border p-1 m-1 " : "text-xs rounded-md border p-1 m-1 borderMain"} key={item.createTime.toString()}>
                 <div className=' flex'>
-                  <div className=' w-1/3'>
+                  <div className=' w-1/2'>
                     <p>本金: <span className='mainTextColor'>{fromTokenValue(item.value, 18, 3)}</span></p>
                   </div>
-                  <div className=' w-1/3'>
+                  <div className=' w-1/2'>
                     <p>收益: <span className='mainTextColor'>{fromTokenValue(ItemReward(item), 18, 2)}</span></p>
                   </div>
-                  <div className=' w-1/3'>
+                  {/* <div className=' w-1/3'>
                     <p>锁定时长: <span className='mainTextColor'>{new BigNumber(item.perIssueTime.toString()).dividedBy(dayTime).toFixed(0)}天</span></p>
-                  </div>
+                  </div> */}
                 </div>
                 <div>
                   <p>周期: <span className='mainTextColor'>{formattingDate(item.createTime)}</span>-<span className='mainTextColor'>{formattingDate(item.dueTime)}</span></p>
