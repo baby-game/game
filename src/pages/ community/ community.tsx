@@ -34,7 +34,6 @@ function Community() {
 
   //     uint inviteAwardValue; //直推奖
   //     uint scaleAwardValue;  //社区奖
-  //     uint contributionAwardValue; //贡献奖
 
   //     uint inviteValue; //伞下总业绩
   //     address maxZone;  //大区
@@ -73,14 +72,6 @@ function Community() {
 
   const init = () => {
     getUser()
-    getContributioRewardValue()
-  }
-
-  const getContributioRewardValue = async () => {
-    let data = await babyContract?.contributioRewardValue()
-
-    setCanReward(data.toString())
-    console.log("getContributioRewardValue", data)
   }
 
 
@@ -167,11 +158,13 @@ function Community() {
             <p className=" font-bold text-xl mainTextColor mb-2  ">等级介绍</p>
           </div>
           <Grid container className=' mb-3 flex text-sm'>
-            <p>S1:社区做市金额≥1000USDT</p>
-            <p>S2:社区内不同市场出现2个S1</p>
-            <p>S3:社区内不同市场出现2个S2</p>
-            <p>S4:社区内不同市场出现3个S3</p>
-            <p>S5:社区内不同市场出现3个S4</p>
+            <p>S1:小区业绩之和≥1万USDT</p>
+            <p>S2:小区业绩之和≥3万USDT</p>
+            <p>S3:小区业绩之和≥9万USDT</p>
+            <p>S4:小区业绩之和≥30万USDT</p>
+            <p>S5:小区业绩之和≥60万USDT</p>
+            <p>S6:小区业绩之和≥120万USDT</p>
+            <p>S7:小区业绩之和≥240万USDT</p>
           </Grid>
         </DialogContent>
       </Dialog>
@@ -210,22 +203,6 @@ function Community() {
             </p>
           </div>
         </div>
-
-        {/* <div className=" flex pt-4">
-          <div className=" w-1/2">
-            <p className=" text-gray-400 text-sm">
-              推广用户:
-              <span className=" text-black text-base font-bold ml-2">111</span>
-            </p>
-          </div>
-          <div className=" w-1/2">
-            <p className=" text-gray-400 text-sm">
-              社区用户:
-              <span className=" text-black text-base font-bold ml-2">111</span>
-            </p>
-          </div>
-        </div> */}
-
         <div className="pt-4">
           <div >
             <p className=" text-gray-400 text-sm">
@@ -254,7 +231,7 @@ function Community() {
 
         <div>
           <p className=" indent-8 text-sm leading-6 p-2">
-            个人做市金额必须100USDT以上的有效账户才能获得奖励，S3及以上账户的个人做市金额必须保持10000USDT才能获得奖励。
+            个人做市金额必须100USDT以上的有效账户才能获得奖励，S3及以上账户的个人做市金额必须保持1000USDT才能获得奖励。
           </p>
         </div>
       </div>
@@ -287,14 +264,13 @@ function Community() {
           </div>
         </div>
 
-        <div className=" flex pt-1 ">
+        {/* <div className=" flex pt-1 ">
           <div className=" w-2/3">
             <p className=' text-sm text-gray-400'>待提取收益</p>
             <p className=' font-bold text-xl leading-loose break-words whitespace-normal'>
               {fromTokenValue(canReward, 18, 3)}
               <span className=" text-sm ml-1">USDT</span>
             </p>
-
           </div>
           <div className=" w-1/3">
             <p className=' text-center' style={{ lineHeight: "60px" }}>
@@ -304,6 +280,7 @@ function Community() {
             </p>
           </div>
         </div>
+         */}
       </div>
     </div>
   </>

@@ -30,6 +30,7 @@ function Plan() {
 
 
   const [sendAmount, setSendAmount] = useState<string>("")
+  const [change, setChange] = useState<boolean>(false)
 
   // address inviter; //推荐人
   // uint value; //有效
@@ -38,7 +39,6 @@ function Plan() {
 
   // uint inviteAwardValue; //直推奖
   // uint scaleAwardValue;  //社区奖
-  // uint contributionAwardValue; //贡献奖
 
   // uint inviteValue; //伞下总业绩
   // address maxZone; 
@@ -55,10 +55,14 @@ function Plan() {
   // const [reJoinPop, setReJoinPop] = useState<boolean>(false)
 
   const [JoinItems, setJoinItems] = useState<any>([])
+  let arr = [18, 48, 98, 188]
+
+  const [rateList, setRateList] = useState<any>([])
 
   useEffect(() => {
     init()
     console.log("usdtAddr", usdtAddr)
+    getRate()
   }, [account])
 
   const init = () => {
@@ -67,11 +71,22 @@ function Plan() {
     getJoinItems()
   }
 
-
   const getUser = async () => {
     let data = await babyContract?.getUser(account)
     console.log("getUser", data)
     // setReJoin(data.reJoin)
+  }
+
+  const getRate = async () => {
+
+    let promises = arr.map((item: any) => {
+      return babyContract?.getStakeDayRate(item)
+    });
+    let data = await Promise.all(promises)
+    console.log("getRate", data)
+    setRateList(data)
+    // Promise.all(promises).then((responses) => {
+
   }
 
 
@@ -138,6 +153,7 @@ function Plan() {
             setLoadingState("success")
             setLoadingText("交易成功")
             setTimeout(() => {
+              setChange(!change)
               setLoading(false)
               setLoadingState("")
             }, 2000);
@@ -359,9 +375,7 @@ function Plan() {
                 },
               }} control={<Radio sx={{
                 color: "rgb(60, 125, 104)",
-                // '& .MuiSvgIcon-root': {
-                //   fontSize: 28,
-                // },
+
                 '&.Mui-checked': {
                   color: "rgb(60, 125, 104)",
                 },
@@ -390,61 +404,18 @@ function Plan() {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* <Dialog
-        open={reJoinPop}
-        onClose={() => {
-          setReJoinPop(false)
-        }}
-        sx={{
-          '& .MuiDialog-paper': {
-            width: 300,
-            maxWidth: '80%',
-            background: '#fff',
-          }
-        }}
-        maxWidth="md"
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <div>
-            <p className=" font-bold text-xl mainTextColor mb-2  ">是否自动做市</p>
-          </div>
-          <div>
-            <div>
-              <p className=' text-sm'>
-                当前状态: <span className='font-bold text-xl '>{reJoin ? "开启中" : "关闭中"} </span>
-              </p>
-            </div>
-          </div>
-
-          <div className=" mt-5  text-center">
-            <p>
-              <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-                onClick={() => {
-                  sendReJoin()
-                }}
-              >
-                确认{reJoin ? "关闭" : "开启"}
-              </span>
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog> */}
-
       <div className='bg-white rounded-2xl  mt-32  mx-3 mb-5 p-3'>
         <div className='flex text-center'>
           <div className=' flex-1'>
             <p className=' text-sm text-gray-400'>USDT 钱包余额</p>
             <p className=' font-bold text-xl leading-loose'>
               {
-                usdtAddr && account && <TokenBalance token={usdtAddr} addr={account + ""} decimalPlaces={2} />
+                usdtAddr && account && <TokenBalance token={usdtAddr} addr={account + ""} change={change} decimalPlaces={2} />
               }
             </p>
           </div>
           <div className=' flex-1'>
-            <p className=' text-sm text-gray-400'>USDT 账号余额</p>
+            <p className=' text-sm text-gray-400'>USDT 账户余额</p>
             <p className=' font-bold text-xl leading-loose break-words whitespace-normal'>{fromTokenValue(accountBalance, 18, 2)}</p>
           </div>
         </div>
@@ -457,7 +428,7 @@ function Plan() {
               width: "100%",
               height: "16px !important"
             }}
-            placeholder='点击或输入数量（新增参与USDT）'
+            placeholder='点击或输入数量'
             value={sendAmount}
             onChange={(e) => {
               setSendAmount(verify(e.target.value))
@@ -515,28 +486,6 @@ function Plan() {
             </p>
           </div>
         </div>
-
-        <div className=' mt-2 mb-4'>
-          <p className=' text-center'>
-            <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-              onClick={() => {
-                if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                  setLoading(true)
-                  setLoadingState("error")
-                  setLoadingText("请填写数量")
-                  setTimeout(() => {
-                    setLoadingState("")
-                    setLoading(false)
-                  }, 2000);
-                  return
-                } else {
-                  setBaseDays(18)
-                  setJoinPop(true)
-                }
-              }}
-            >授权参与做市 </span>
-          </p>
-        </div>
       </div>
 
       <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
@@ -545,9 +494,8 @@ function Plan() {
             <div>
               <p style={{
                 lineHeight: "50px"
-              }} className=' text-gray-400'>30天合约做市</p>
+              }} className=' text-gray-400'>3-18天合约做市</p>
               <p className=' font-bold text-xl break-words whitespace-normal'>
-                {/* {fromTokenValue(accountBalance, 18, 2)} */}
               </p>
             </div>
           </div>
@@ -555,23 +503,25 @@ function Plan() {
             <p className=' text-center' style={{
               lineHeight: "50px"
             }}>
-              <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
-                onClick={() => {
-                  if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                    setLoading(true)
-                    setLoadingState("error")
-                    setLoadingText("请填写数量")
-                    setTimeout(() => {
-                      setLoadingState("")
-                      setLoading(false)
-                    }, 2000);
-                    return
-                  } else {
-                    setBaseDays(30)
-                    setJoinPop(true)
-                  }
-                }}
-              >授权参与做市 </span>
+              {
+                rateList.length > 0 && new BigNumber(rateList[0].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                  onClick={() => {
+                    if (!new BigNumber(sendAmount).isGreaterThan(0)) {
+                      setLoading(true)
+                      setLoadingState("error")
+                      setLoadingText("请填写数量")
+                      setTimeout(() => {
+                        setLoadingState("")
+                        setLoading(false)
+                      }, 2000);
+                      return
+                    } else {
+                      setBaseDays(18)
+                      setJoinPop(true)
+                    }
+                  }}
+                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+              }
             </p>
           </div>
         </div>
@@ -583,9 +533,8 @@ function Plan() {
             <div>
               <p style={{
                 lineHeight: "50px"
-              }} className=' text-gray-400'>90天合约做市</p>
+              }} className=' text-gray-400'>3-48天合约做市</p>
               <p className=' font-bold text-xl break-words whitespace-normal'>
-                {/* {fromTokenValue(accountBalance, 18, 2)} */}
               </p>
             </div>
           </div>
@@ -593,23 +542,25 @@ function Plan() {
             <p className=' text-center' style={{
               lineHeight: "50px"
             }}>
-              <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
-                onClick={() => {
-                  if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                    setLoading(true)
-                    setLoadingState("error")
-                    setLoadingText("请填写数量")
-                    setTimeout(() => {
-                      setLoadingState("")
-                      setLoading(false)
-                    }, 2000);
-                    return
-                  } else {
-                    setBaseDays(90)
-                    setJoinPop(true)
-                  }
-                }}
-              >授权参与做市 </span>
+              {
+                rateList.length > 0 && new BigNumber(rateList[1].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                  onClick={() => {
+                    if (!new BigNumber(sendAmount).isGreaterThan(0)) {
+                      setLoading(true)
+                      setLoadingState("error")
+                      setLoadingText("请填写数量")
+                      setTimeout(() => {
+                        setLoadingState("")
+                        setLoading(false)
+                      }, 2000);
+                      return
+                    } else {
+                      setBaseDays(48)
+                      setJoinPop(true)
+                    }
+                  }}
+                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+              }
             </p>
           </div>
         </div>
@@ -621,9 +572,8 @@ function Plan() {
             <div>
               <p style={{
                 lineHeight: "50px"
-              }} className=' text-gray-400'>180天合约做市</p>
+              }} className=' text-gray-400'>3-98天合约做市</p>
               <p className=' font-bold text-xl break-words whitespace-normal'>
-                {/* {fromTokenValue(accountBalance, 18, 2)} */}
               </p>
             </div>
           </div>
@@ -631,102 +581,88 @@ function Plan() {
             <p className=' text-center' style={{
               lineHeight: "50px"
             }}>
-              <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
-                onClick={() => {
-                  if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                    setLoading(true)
-                    setLoadingState("error")
-                    setLoadingText("请填写数量")
-                    setTimeout(() => {
-                      setLoadingState("")
-                      setLoading(false)
-                    }, 2000);
-                    return
-                  } else {
-                    setBaseDays(180)
-                    setJoinPop(true)
-                  }
-                }}
-              >授权参与做市 </span>
+              {
+                rateList.length > 0 && new BigNumber(rateList[2].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                  onClick={() => {
+                    if (!new BigNumber(sendAmount).isGreaterThan(0)) {
+                      setLoading(true)
+                      setLoadingState("error")
+                      setLoadingText("请填写数量")
+                      setTimeout(() => {
+                        setLoadingState("")
+                        setLoading(false)
+                      }, 2000);
+                      return
+                    } else {
+                      setBaseDays(98)
+                      setJoinPop(true)
+                    }
+                  }}
+                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+              }
             </p>
           </div>
         </div>
       </div>
 
-      {/* <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
+      <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
         <div className=' flex'>
           <div className='w-1/2'>
-            <FormControlLabel
-              value="bottom"
-              control={<Switch
-                checked={reJoin}
-                sx={{
-                  '& .MuiSwitch-switchBase': {
-                    color: '#fff',
-                  },
-                  '& .MuiSwitch-switchBase.Mui-checked': {
-                    color: '#fff',
-                  },
-                  '& .MuiSwitch-switchBase + .MuiSwitch-track': {
-                    backgroundColor: '#B85050',
-                    opacity: 1,
-                  },
-                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                    backgroundColor: 'rgb(60, 125, 104)',
-                    opacity: 1,
-                  },
-                }}
-                onClick={() => {
-                  setReJoinPop(true)
-                }} color="primary" />}
-
-              label="自动做市"
-              // labelPlacement="bottom"
-              sx={{
-                '& .MuiTypography-root': {
-                  fontSize: "0.875rem"
-                },
-              }}
-            />
+            <div>
+              <p style={{
+                lineHeight: "50px"
+              }} className=' text-gray-400'>3-188天合约做市</p>
+              <p className=' font-bold text-xl break-words whitespace-normal'>
+              </p>
+            </div>
           </div>
           <div className='w-1/2'>
             <p className=' text-center' style={{
-              lineHeight: "40px"
+              lineHeight: "50px"
             }}>
-              <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
-                onClick={() => {
-                  sendTakeBack()
-                }}
-              >提现 </span>
+              {
+                rateList.length > 0 && new BigNumber(rateList[3].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                  onClick={() => {
+                    if (!new BigNumber(sendAmount).isGreaterThan(0)) {
+                      setLoading(true)
+                      setLoadingState("error")
+                      setLoadingText("请填写数量")
+                      setTimeout(() => {
+                        setLoadingState("")
+                        setLoading(false)
+                      }, 2000);
+                      return
+                    } else {
+                      setBaseDays(188)
+                      setJoinPop(true)
+                    }
+                  }}
+                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+              }
             </p>
           </div>
         </div>
-      </div> */}
+      </div>
 
       <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
         <div className=' flex'>
-              
+
           <p className='mainTextColor font-bold w-1/2 '>入金记录</p>
           <p className=' text-center w-1/2' >
-              <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
-                onClick={() => {
-                  sendTakeBack()
-                }}
-              >提现 </span>
-            </p>
+            <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+              onClick={() => {
+                sendTakeBack()
+              }}
+            >提现 </span>
+          </p>
         </div>
-        {/* uint value; //本金
-        uint createTime; //开始时间 
-        uint perIssueTime; // 锁定时长
-        uint dueTime; //结束时间, 当为自动续期时,为uint最大值
-        uint rate; */}
+
         <div className=' pt-2 pb-4 ' style={{
           maxHeight: "330px",
           overflow: 'scroll'
         }} >
           {
             JoinItems && JoinItems.map((item: any) => {
-              // return <div className=' text-xs rounded-md border p-1 m-1 borderMain' key={item.createTime.toString()}>
               return <div className={new BigNumber(new Date().getTime()).isGreaterThan(item.dueTime.toString()) ? "text-xs rounded-md border p-1 m-1 " : "text-xs rounded-md border p-1 m-1 borderMain"} key={item.createTime.toString()}>
                 <div className=' flex'>
                   <div className=' w-1/2'>
@@ -735,9 +671,6 @@ function Plan() {
                   <div className=' w-1/2'>
                     <p>收益: <span className='mainTextColor'>{fromTokenValue(ItemReward(item), 18, 2)}</span></p>
                   </div>
-                  {/* <div className=' w-1/3'>
-                    <p>锁定时长: <span className='mainTextColor'>{new BigNumber(item.perIssueTime.toString()).dividedBy(dayTime).toFixed(0)}天</span></p>
-                  </div> */}
                 </div>
                 <div>
                   <p>周期: <span className='mainTextColor'>{formattingDate(item.createTime)}</span>-<span className='mainTextColor'>{formattingDate(item.dueTime)}</span></p>
@@ -749,7 +682,6 @@ function Plan() {
       </div>
     </div>
   </>
-
   )
 }
 

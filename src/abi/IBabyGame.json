@@ -7,25 +7,6 @@
         "type": "address"
       }
     ],
-    "name": "contributioRewardValue",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
     "name": "expiredItemsValue",
     "outputs": [
       {
@@ -107,12 +88,12 @@
         "components": [
           {
             "internalType": "uint256",
-            "name": "startTime",
+            "name": "startDayIndex",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "endTime",
+            "name": "endDayIndex",
             "type": "uint256"
           },
           {
@@ -124,6 +105,25 @@
         "internalType": "struct IStructs.Reparation[]",
         "name": "",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStakeDayRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -159,6 +159,11 @@
           {
             "internalType": "uint256",
             "name": "lastSettleTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "canWithdrawalValue",
             "type": "uint256"
           },
           {
@@ -203,19 +208,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      }
-    ],
-    "name": "harvestContributioReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

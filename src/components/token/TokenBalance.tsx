@@ -9,10 +9,11 @@ interface ITokenBalance {
     token: string,
     addr?: string
     decimalPlaces: number,
-    setTokenBalance?: Function
+    setTokenBalance?: Function,
+    change?:boolean
 }
 
-export default function TokenBalance({ token, addr, decimalPlaces, setTokenBalance }: ITokenBalance) {
+export default function TokenBalance({ token, addr, decimalPlaces, setTokenBalance,change }: ITokenBalance) {
 
     const { library } = useWeb3React();
     const tokenContract = useERC20(token);
@@ -20,7 +21,6 @@ export default function TokenBalance({ token, addr, decimalPlaces, setTokenBalan
     const [balance, setBalance] = useState<string>('0');
 
     useEffect(() => {
-
         if (token == AddressZero) {
             const provider = new Web3Provider(library.provider);
             provider.getBalance(addr + "").then((balance: any) => {
@@ -39,7 +39,7 @@ export default function TokenBalance({ token, addr, decimalPlaces, setTokenBalan
                 });
             });
         };
-    }, [tokenContract]);
+    }, [tokenContract,change]);
 
     return <>{new BigNumber(balance).dividedBy(10 ** decimals).toFixed(decimalPlaces)}</>
 }

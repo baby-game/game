@@ -72,7 +72,7 @@ function Wealth() {
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
                 <p className=' indent-8 text-sm'>
-                    每期熔断时，50%个人做市本金退回，另外50%按1.5倍重生财富奖励以SOD实时价格，每日（8:00）金本位奖励SOD，按照300天周期平均固定。
+                    每期熔断时，50%个人做市本金退回，另外50%按1.5倍重生财富奖励。以SOD实时价格，每日（8:00）金本位奖励SOD，按照300天周期平均固定。
                 </p>
             </div>
         </div>
