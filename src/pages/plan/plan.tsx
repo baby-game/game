@@ -47,6 +47,7 @@ function Plan() {
   let arr = [18, 48, 98, 188]
 
   const [rateList, setRateList] = useState<any>([])
+  const [lastTime, setLastTime] = useState<string>("0")
 
   useEffect(() => {
     init()
@@ -63,6 +64,7 @@ function Plan() {
   const getUser = async () => {
     let data = await babyContract?.getUser(account)
     console.log("getUser", data)
+    setLastTime(data.lastSettleTime.toString())
     // setReJoin(data.reJoin)
   }
 
@@ -650,7 +652,7 @@ function Plan() {
         }} >
           {
             JoinItems && JoinItems.map((item: any) => {
-              return <div className={new BigNumber(new Date().getTime()).isGreaterThan(item.dueTime.toString()) ? "text-xs rounded-md border p-1 m-1 " : "text-xs rounded-md border p-1 m-1 borderMain"} key={item.createTime.toString()}>
+              return <div className={new BigNumber(lastTime).isGreaterThan(item.dueTime.toString()) ? "text-xs rounded-md border p-1 m-1 " : "text-xs rounded-md border p-1 m-1 borderMain"} key={item.createTime.toString()}>
                 <div className=' flex'>
                   <div className=' w-1/2'>
                     <p>本金: <span className='mainTextColor'>{fromTokenValue(item.value, 18, 3)}</span></p>
