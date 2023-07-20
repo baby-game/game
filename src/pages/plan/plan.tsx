@@ -32,17 +32,6 @@ function Plan() {
   const [sendAmount, setSendAmount] = useState<string>("")
   const [change, setChange] = useState<boolean>(false)
 
-  // address inviter; //推荐人
-  // uint value; //有效
-  // uint scale; //等级
-  // uint lastSettleTime;
-
-  // uint inviteAwardValue; //直推奖
-  // uint scaleAwardValue;  //社区奖
-
-  // uint inviteValue; //伞下总业绩
-  // address maxZone; 
-
   const [accountBalance, setAccountBalance] = useState<string>("0")
 
   const [joinPop, setJoinPop] = useState<boolean>(false)
@@ -62,13 +51,13 @@ function Plan() {
   useEffect(() => {
     init()
     console.log("usdtAddr", usdtAddr)
-    getRate()
   }, [account])
 
   const init = () => {
     getExpiredItemsValue()
     getUser()
     getJoinItems()
+    getRate()
   }
 
   const getUser = async () => {
@@ -85,8 +74,6 @@ function Plan() {
     let data = await Promise.all(promises)
     console.log("getRate", data)
     setRateList(data)
-    // Promise.all(promises).then((responses) => {
-
   }
 
 
@@ -504,7 +491,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList.length > 0 && new BigNumber(rateList[0].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[0] && new BigNumber(rateList[0].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       setLoading(true)
@@ -543,7 +530,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList.length > 0 && new BigNumber(rateList[1].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[1] && new BigNumber(rateList[1].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       setLoading(true)
@@ -582,7 +569,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList.length > 0 && new BigNumber(rateList[2].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[2] && new BigNumber(rateList[2].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       setLoading(true)
@@ -621,7 +608,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList.length > 0 && new BigNumber(rateList[3].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[3] && new BigNumber(rateList[3].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       setLoading(true)
