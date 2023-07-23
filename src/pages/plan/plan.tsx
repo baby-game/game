@@ -291,7 +291,7 @@ function Plan() {
 
     // 1 > 2  lasttime >= 1  reimburse
 
-    if (new BigNumber(status2).isLessThan(status1)) {
+    if (new BigNumber(status1).isLessThanOrEqualTo(status2)) {
       try {
         if (!new BigNumber(lastTime).isLessThan(status1)) {
           const gas: any = await babyContract?.estimateGas.reimburse({ from: account })
@@ -324,43 +324,17 @@ function Plan() {
       }
 
     } else {
-
-      try {
-        const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
-        console.log("sendJoin gas", gas)
-        const response = await babyContract?.setFusingTime({
-          from: account,
-          gasLimit: gas.mul(105).div(100)
-        });
-
-        let provider = new ethers.providers.Web3Provider(library.provider);
-
-        let receipt = await provider.waitForTransaction(response.hash);
-        if (receipt !== null) {
-          if (receipt.status && receipt.status == 1) {
-            init()
-            setLoadingState("success")
-            setLoadingText("交易成功")
-            setTimeout(() => {
-              setLoading(false)
-              setLoadingState("")
-            }, 2000);
-          } else {
-            sendTakeBackLoadingErr()
-          }
-        }
-
-      } catch (error) {
+      if(new BigNumber(lastTime).isLessThan(status1)){
         try {
-          const gas: any = await babyContract?.estimateGas.takeBack(account, { from: account })
+          const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
           console.log("sendJoin gas", gas)
-          const response = await babyContract?.takeBack(account, {
+          const response = await babyContract?.setFusingTime({
             from: account,
             gasLimit: gas.mul(105).div(100)
           });
-
+  
           let provider = new ethers.providers.Web3Provider(library.provider);
-
+  
           let receipt = await provider.waitForTransaction(response.hash);
           if (receipt !== null) {
             if (receipt.status && receipt.status == 1) {
@@ -375,9 +349,36 @@ function Plan() {
               sendTakeBackLoadingErr()
             }
           }
-        } catch (err: any) {
-          sendTakeBackLoadingErr()
-
+  
+        } catch (error) {
+          try {
+            const gas: any = await babyContract?.estimateGas.takeBack(account, { from: account })
+            console.log("sendJoin gas", gas)
+            const response = await babyContract?.takeBack(account, {
+              from: account,
+              gasLimit: gas.mul(105).div(100)
+            });
+  
+            let provider = new ethers.providers.Web3Provider(library.provider);
+  
+            let receipt = await provider.waitForTransaction(response.hash);
+            if (receipt !== null) {
+              if (receipt.status && receipt.status == 1) {
+                init()
+                setLoadingState("success")
+                setLoadingText("交易成功")
+                setTimeout(() => {
+                  setLoading(false)
+                  setLoadingState("")
+                }, 2000);
+              } else {
+                sendTakeBackLoadingErr()
+              }
+            }
+          } catch (err: any) {
+            sendTakeBackLoadingErr()
+  
+          }
         }
       }
     }
