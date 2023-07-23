@@ -3,12 +3,21 @@ import { useBabyGameContract } from '../../hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 import HeadBar from '../../components/headbar'
+import TipPop from '../../components/pop/TipPop'
+import { fromTokenValue } from '../../utils'
+import BigNumber from "bignumber.js";
+
+const ethers = require('ethers');
+
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 
 function Wealth() {
     const babyContract = useBabyGameContract(BabyGameAddr)
     const { account, library } = useWeb3React()
     const [dataList, setDataList] = useState<any>([])
+    const [loading, setLoading] = useState<boolean>(false);
+    const [loadingState, setLoadingState] = useState<string>("loading")
+    const [loadingText, setLoadingText] = useState<string>("")
     useEffect(() => {
         init()
     }, [account])
@@ -19,56 +28,131 @@ function Wealth() {
     const getReparations = async () => {
         let data = await babyContract?.getReparations(account)
         console.log("getReparations", data)
+        setDataList(data.reverse())
     }
+    // getReimburse
+    const sendGetReimburse = async (index: number) => {
 
+        setLoadingState("loading")
+        setLoadingText("交易打包中")
+        try {
+
+            const gas: any = await babyContract?.estimateGas.getReimburse(index, account, { from: account })
+            console.log("sendJoin gas", gas)
+            const response = await babyContract?.getReimburse(index, account, {
+                from: account,
+                gasLimit: gas.mul(105).div(100)
+            });
+            let provider = new ethers.providers.Web3Provider(library.provider);
+
+            let receipt = await provider.waitForTransaction(response.hash);
+            if (receipt !== null) {
+                if (receipt.status && receipt.status == 1) {
+                    init()
+                    setLoadingState("success")
+                    setLoadingText("交易成功")
+                    setTimeout(() => {
+                        setLoading(false)
+                        setLoadingState("")
+                    }, 2000);
+                } else {
+                    setLoadingState("error")
+                    setLoadingText("交易失败")
+                    setTimeout(() => {
+                        setLoadingState("")
+                        setLoading(false)
+                    }, 2000);
+                }
+            }
+        } catch (err: any) {
+
+            console.log("sendJoin err", err)
+
+            setLoadingState("error")
+            setLoadingText("交易失败")
+            setTimeout(() => {
+                setLoadingState("")
+                setLoading(false)
+            }, 2000);
+        }
+    }
 
     return (<>
         <HeadBar />
         <div className=" main">
+            <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
+
             <div className=' pt-32  mx-3 pb-10'>
                 {/* <h3 className="indent-8 font-bold text-xl mainTextColor">重生财富</h3> */}
             </div>
-            <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
-                <h3 className='mainTextColor font-bold text-2xl text-center mb-2'>重生财富</h3>
-                <div>
-                    <div className=' flex'>
-                        <div className=' flex-1'>
-                            <div>
-                                <div className='  flex '>
-                                    <img
-                                        className=' w-5 h-5 mr-2'
-                                        src={menuIcon} alt="" />
-                                    <p className='text-gray-400 text-sm'>待提取重生财富奖励</p>
-                                </div>
-                                <p className='font-bold text-3xl leading-loose'>
-                                    100000
-                                    <span className=' text-sm ml-3'>SOD</span>
-                                </p>
-                            </div>
-                            <div>
-                                <div className=' flex'>
-                                    <div className=' flex-1 flex '>
-                                        <img
-                                            className='  w-5 h-5 mr-2'
-                                            src={menuIcon} alt="" />
-                                        <p className='text-gray-400 text-sm'>已提取重生财富奖励</p>
+
+            {
+                dataList && dataList.map((item: any, index: number) => {
+                    return <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
+                        <h3 className='mainTextColor font-bold text-2xl text-center mb-2'>重生财富第{dataList.length - index}</h3>
+                        <div>
+                            <div className=' flex'>
+                                <div className=' flex-1'>
+                                    <div>
+                                        <div className='  flex '>
+                                            <img
+                                                className=' w-5 h-5 mr-2'
+                                                src={menuIcon} alt="" />
+                                            <p className='text-gray-400 text-sm'>待提取重生财富奖励</p>
+                                        </div>
+                                        <p className='font-bold text-3xl leading-loose'>
+                                            {fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(item.end.toString()).minus(item.start.toString())).toString(), 18, 3)}
+                                            <span className=' text-sm ml-3'>USDT</span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <div className=' flex'>
+                                            <div className=' flex-1 flex '>
+                                                <img
+                                                    className='  w-5 h-5 mr-2'
+                                                    src={menuIcon} alt="" />
+                                                <p className='text-gray-400 text-sm'>已提取重生财富奖励</p>
+                                            </div>
+                                        </div>
+                                        <p className='font-bold text-3xl leading-loose'>
+                                            {fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(300).plus(item.start.toString()).minus(item.end.toString())).toString(), 18, 3)}
+                                            <span className=' text-sm ml-3'>USDT</span>
+                                        </p>
                                     </div>
                                 </div>
-                                <p className='font-bold text-3xl leading-loose'>
-                                    100000
-                                    <span className=' text-sm ml-3'>SOD</span>
-                                </p>
+
+                                <div className=' w-24'>
+                                    <p className=' text-center'>
+                                        {
+                                            new BigNumber(item.start.toString()).isGreaterThan(item.end.toString()) ? <span className=' border-solid border rounded-3xl py-1 px-6 text-gray-400 font-bold  border-gray-400 cursor-pointer'>提现</span> : <span className=' border-solid border rounded-3xl py-1 px-6   mainTextColor font-bold borderMain cursor-pointer'
+                                                onClick={() => {
+                                                    sendGetReimburse(index)
+                                                }}>提现</span>
+                                        }
+
+                                    </p>
+                                </div>
                             </div>
                         </div>
-
-                        <div className=' w-24'>
-                            <p className=' text-center'>
-                                <span className=' border-solid border rounded-3xl py-1 px-6 text-gray-400 font-bold  border-gray-400 cursor-pointer'>提现</span>
-                            </p>
-                        </div>
                     </div>
-                </div>
-            </div>
+                })
+            }
+
+            {/* 
+            1 <= 2  正常执行
+
+            1 > 2  lasttime >= 1 
+
+
+            1000 * 3000  
+
+
+            staert-end
+
+        start < end  
+        
+        amount  300 + start-end 
+         */}
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
                 <p className=' indent-8 text-sm'>

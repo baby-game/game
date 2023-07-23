@@ -49,6 +49,9 @@ function Plan() {
   const [rateList, setRateList] = useState<any>([])
   const [lastTime, setLastTime] = useState<string>("0")
 
+  const [status1, setStatus1] = useState<string>("0")
+  const [status2, setStatus2] = useState<string>("0")
+
   useEffect(() => {
     init()
     console.log("usdtAddr", usdtAddr)
@@ -59,6 +62,14 @@ function Plan() {
     getUser()
     getJoinItems()
     getRate()
+    getFusingStatus()
+  }
+  // fusingStatus
+  const getFusingStatus = async () => {
+    let data = await babyContract?.fusingStatus()
+    console.log("getFusingStatus", data)
+    setStatus1(data[0].toString())
+    setStatus2(data[1].toString())
   }
 
   const getUser = async () => {
@@ -276,46 +287,109 @@ function Plan() {
     setLoadingState("loading")
     setLoadingText("交易打包中")
 
-    try {
-      const gas: any = await babyContract?.estimateGas.takeBack(account, { from: account })
-      console.log("sendJoin gas", gas)
-      const response = await babyContract?.takeBack(account, {
-        from: account,
-        gasLimit: gas.mul(105).div(100)
-      });
+    // 1 <= 2  正常执行
 
-      let provider = new ethers.providers.Web3Provider(library.provider);
+    // 1 > 2  lasttime >= 1  reimburse
 
-      let receipt = await provider.waitForTransaction(response.hash);
-      if (receipt !== null) {
-        if (receipt.status && receipt.status == 1) {
-          init()
-          // setReJoinPop(false)
+    if (new BigNumber(status2).isLessThan(status1)) {
+      try {
+        if (!new BigNumber(lastTime).isLessThan(status1)) {
+          const gas: any = await babyContract?.estimateGas.reimburse({ from: account })
+          console.log("sendJoin gas", gas)
+          const response = await babyContract?.reimburse({
+            from: account,
+            gasLimit: gas.mul(105).div(100)
+          });
 
-          setLoadingState("success")
-          setLoadingText("交易成功")
-          setTimeout(() => {
-            setLoading(false)
-            setLoadingState("")
-          }, 2000);
-        } else {
-          setLoadingState("error")
-          setLoadingText("交易失败")
-          setTimeout(() => {
-            setLoadingState("")
-            setLoading(false)
-          }, 2000);
+          let provider = new ethers.providers.Web3Provider(library.provider);
+
+          let receipt = await provider.waitForTransaction(response.hash);
+          if (receipt !== null) {
+            if (receipt.status && receipt.status == 1) {
+              init()
+              setLoadingState("success")
+              setLoadingText("交易成功")
+              setTimeout(() => {
+                setLoading(false)
+                setLoadingState("")
+              }, 2000);
+            } else {
+              sendTakeBackLoadingErr()
+            }
+          }
+        }
+
+      } catch (error) {
+        sendTakeBackLoadingErr()
+      }
+
+    } else {
+
+      try {
+        const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
+        console.log("sendJoin gas", gas)
+        const response = await babyContract?.setFusingTime({
+          from: account,
+          gasLimit: gas.mul(105).div(100)
+        });
+
+        let provider = new ethers.providers.Web3Provider(library.provider);
+
+        let receipt = await provider.waitForTransaction(response.hash);
+        if (receipt !== null) {
+          if (receipt.status && receipt.status == 1) {
+            init()
+            setLoadingState("success")
+            setLoadingText("交易成功")
+            setTimeout(() => {
+              setLoading(false)
+              setLoadingState("")
+            }, 2000);
+          } else {
+            sendTakeBackLoadingErr()
+          }
+        }
+
+      } catch (error) {
+        try {
+          const gas: any = await babyContract?.estimateGas.takeBack(account, { from: account })
+          console.log("sendJoin gas", gas)
+          const response = await babyContract?.takeBack(account, {
+            from: account,
+            gasLimit: gas.mul(105).div(100)
+          });
+
+          let provider = new ethers.providers.Web3Provider(library.provider);
+
+          let receipt = await provider.waitForTransaction(response.hash);
+          if (receipt !== null) {
+            if (receipt.status && receipt.status == 1) {
+              init()
+              setLoadingState("success")
+              setLoadingText("交易成功")
+              setTimeout(() => {
+                setLoading(false)
+                setLoadingState("")
+              }, 2000);
+            } else {
+              sendTakeBackLoadingErr()
+            }
+          }
+        } catch (err: any) {
+          sendTakeBackLoadingErr()
+
         }
       }
-    } catch (err: any) {
-      console.log("sendJoin err", err)
-      setLoadingState("error")
-      setLoadingText("交易失败")
-      setTimeout(() => {
-        setLoadingState("")
-        setLoading(false)
-      }, 2000);
     }
+  }
+
+  const sendTakeBackLoadingErr = () => {
+    setLoadingState("error")
+    setLoadingText("交易失败")
+    setTimeout(() => {
+      setLoadingState("")
+      setLoading(false)
+    }, 2000);
   }
 
   return (<>
@@ -638,11 +712,15 @@ function Plan() {
 
           <p className='mainTextColor font-bold w-1/2 '>入金记录</p>
           <p className=' text-center w-1/2' >
-            <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
-              onClick={() => {
-                sendTakeBack()
-              }}
-            >提现 </span>
+            {
+              new BigNumber(status1).isLessThanOrEqualTo(status2) && new BigNumber(lastTime).isLessThan(status1) ? <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
+              >提现 </span> : <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                onClick={() => {
+                  sendTakeBack()
+                }}
+              >提现 </span>
+            }
+
           </p>
         </div>
 
