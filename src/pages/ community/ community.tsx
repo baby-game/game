@@ -74,64 +74,6 @@ function Community() {
     getUser()
   }
 
-
-  // function harvestContributioReward(address to) external; //我的社区里的提现
-
-  const sendHarvestContributioReward = async () => {
-    if (new BigNumber(canReward).isZero()) {
-      setLoading(true)
-      setLoadingState("error")
-      setLoadingText("没有待提取奖励")
-      setTimeout(() => {
-        setLoadingState("")
-        setLoading(false)
-      }, 2000);
-      return
-    }
-    setLoadingState("loading")
-    setLoadingText("交易打包中")
-    try {
-
-      const gas: any = await babyContract?.estimateGas.harvestContributioReward(account, { from: account })
-      console.log("sendJoin gas", gas)
-      const response = await babyContract?.harvestContributioReward(account, {
-        from: account,
-        gasLimit: gas.mul(105).div(100)
-      });
-      let provider = new ethers.providers.Web3Provider(library.provider);
-
-      let receipt = await provider.waitForTransaction(response.hash);
-      if (receipt !== null) {
-        if (receipt.status && receipt.status == 1) {
-          init()
-          setLoadingState("success")
-          setLoadingText("交易成功")
-          setTimeout(() => {
-            setLoading(false)
-            setLoadingState("")
-          }, 2000);
-        } else {
-          setLoadingState("error")
-          setLoadingText("交易失败")
-          setTimeout(() => {
-            setLoadingState("")
-            setLoading(false)
-          }, 2000);
-        }
-      }
-    } catch (err: any) {
-
-      console.log("sendJoin err", err)
-
-      setLoadingState("error")
-      setLoadingText("交易失败")
-      setTimeout(() => {
-        setLoadingState("")
-        setLoading(false)
-      }, 2000);
-    }
-  }
-
   return (<>
     <HeadBar />
     <div className=" main">

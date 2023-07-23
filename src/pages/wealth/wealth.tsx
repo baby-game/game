@@ -6,10 +6,12 @@ import HeadBar from '../../components/headbar'
 import TipPop from '../../components/pop/TipPop'
 import { fromTokenValue } from '../../utils'
 import BigNumber from "bignumber.js";
+import { Days } from '../../constants'
 
 const ethers = require('ethers');
 
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
+const dayTime = process.env.REACT_APP_DAY + ""
 
 function Wealth() {
     const babyContract = useBabyGameContract(BabyGameAddr)
@@ -28,7 +30,10 @@ function Wealth() {
     const getReparations = async () => {
         let data = await babyContract?.getReparations(account)
         console.log("getReparations", data)
-        setDataList(data.reverse())
+        if (data !== undefined) {
+            data[0].amount.toString()
+            setDataList(data.reverse())
+        }
     }
     // getReimburse
     const sendGetReimburse = async (index: number) => {
@@ -49,32 +54,53 @@ function Wealth() {
             if (receipt !== null) {
                 if (receipt.status && receipt.status == 1) {
                     init()
-                    setLoadingState("success")
-                    setLoadingText("交易成功")
-                    setTimeout(() => {
-                        setLoading(false)
-                        setLoadingState("")
-                    }, 2000);
+                    sendLoadingSuccess()
                 } else {
-                    setLoadingState("error")
-                    setLoadingText("交易失败")
-                    setTimeout(() => {
-                        setLoadingState("")
-                        setLoading(false)
-                    }, 2000);
+                    sendLoadingErr()
                 }
             }
         } catch (err: any) {
 
             console.log("sendJoin err", err)
 
-            setLoadingState("error")
-            setLoadingText("交易失败")
-            setTimeout(() => {
-                setLoadingState("")
-                setLoading(false)
-            }, 2000);
+            sendLoadingErr()
         }
+    }
+
+    const sendLoadingErr = () => {
+        setLoadingState("error")
+        setLoadingText("交易失败")
+        setTimeout(() => {
+            setLoadingState("")
+            setLoading(false)
+        }, 2000);
+    }
+
+    const sendLoadingSuccess = () => {
+        setLoadingState("success")
+        setLoadingText("交易成功")
+        setTimeout(() => {
+            setLoading(false)
+            setLoadingState("")
+        }, 2000);
+    }
+
+
+    const ItemEarnings = (item: any) => {
+        const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
+        let returnAmount = "0"
+        console.log("timeNow", timeNow)
+        if (new BigNumber(timeNow).isLessThan(item.startDayIndex.toString())) {
+            returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(timeNow).minus(item.startDayIndex.toString())).dividedBy(300).toString(), 18, 3)
+        } else {
+            returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(item.endDayIndex.toString()).minus(item.startDayIndex.toString())).dividedBy(300).toString(), 18, 3)
+        }
+
+        return returnAmount
+    }
+
+    const ItemUnEarnings = (item: any) => {
+        return fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(300).plus(item.startDayIndex.toString()).minus(item.endDayIndex.toString())).dividedBy(300).toString(), 18, 3)
     }
 
     return (<>
@@ -88,8 +114,8 @@ function Wealth() {
 
             {
                 dataList && dataList.map((item: any, index: number) => {
-                    return <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
-                        <h3 className='mainTextColor font-bold text-2xl text-center mb-2'>重生财富第{dataList.length - index}</h3>
+                    return <div className='bg-white rounded-2xl  mx-3 mb-5 p-3' key={index}>
+                        <h3 className='mainTextColor font-bold text-2xl text-center mb-2'>重生财富第{dataList.length - index}期</h3>
                         <div>
                             <div className=' flex'>
                                 <div className=' flex-1'>
@@ -101,7 +127,10 @@ function Wealth() {
                                             <p className='text-gray-400 text-sm'>待提取重生财富奖励</p>
                                         </div>
                                         <p className='font-bold text-3xl leading-loose'>
-                                            {fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(item.end.toString()).minus(item.start.toString())).toString(), 18, 3)}
+
+                                            {
+                                                ItemEarnings(item)
+                                            }
                                             <span className=' text-sm ml-3'>USDT</span>
                                         </p>
                                     </div>
@@ -115,7 +144,12 @@ function Wealth() {
                                             </div>
                                         </div>
                                         <p className='font-bold text-3xl leading-loose'>
-                                            {fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(300).plus(item.start.toString()).minus(item.end.toString())).toString(), 18, 3)}
+
+
+                                            {
+                                                ItemUnEarnings(item)
+                                            }
+
                                             <span className=' text-sm ml-3'>USDT</span>
                                         </p>
                                     </div>
@@ -124,7 +158,7 @@ function Wealth() {
                                 <div className=' w-24'>
                                     <p className=' text-center'>
                                         {
-                                            new BigNumber(item.start.toString()).isGreaterThan(item.end.toString()) ? <span className=' border-solid border rounded-3xl py-1 px-6 text-gray-400 font-bold  border-gray-400 cursor-pointer'>提现</span> : <span className=' border-solid border rounded-3xl py-1 px-6   mainTextColor font-bold borderMain cursor-pointer'
+                                            new BigNumber(item.startDayIndex.toString()).isGreaterThan(item.endDayIndex.toString()) ? <span className=' border-solid border rounded-3xl py-1 px-6 text-gray-400 font-bold  border-gray-400 cursor-pointer'>提现</span> : <span className=' border-solid border rounded-3xl py-1 px-6   mainTextColor font-bold borderMain cursor-pointer'
                                                 onClick={() => {
                                                     sendGetReimburse(index)
                                                 }}>提现</span>

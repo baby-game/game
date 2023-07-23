@@ -19,7 +19,6 @@ const usdtAddr = process.env.REACT_APP_TOKEN_USDT + ""
 const dayTime = process.env.REACT_APP_DAY + ""
 
 
-
 function Plan() {
 
   const babyContract = useBabyGameContract(BabyGameAddr)
@@ -150,30 +149,16 @@ function Plan() {
             init()
             setJoinPop(false)
             setSendAmount("")
-            setLoadingState("success")
-            setLoadingText("交易成功")
-            setTimeout(() => {
-              setChange(!change)
-              setLoading(false)
-              setLoadingState("")
-            }, 2000);
+            setChange(!change)
+
+            sendLoadingSuccess()
           } else {
-            setLoadingState("error")
-            setLoadingText("交易失败")
-            setTimeout(() => {
-              setLoadingState("")
-              setLoading(false)
-            }, 2000);
+            sendLoadingErr()
           }
         }
       } catch (err: any) {
         console.log("sendJoin err", err)
-        setLoadingState("error")
-        setLoadingText("交易失败")
-        setTimeout(() => {
-          setLoadingState("")
-          setLoading(false)
-        }, 2000);
+       sendLoadingErr()
       }
     }
   }
@@ -244,29 +229,14 @@ function Plan() {
           init()
           // setReJoinPop(false)
 
-          setLoadingState("success")
-          setLoadingText("交易成功")
-          setTimeout(() => {
-            setLoading(false)
-            setLoadingState("")
-          }, 2000);
+          sendLoadingSuccess()
         } else {
-          setLoadingState("error")
-          setLoadingText("交易失败")
-          setTimeout(() => {
-            setLoadingState("")
-            setLoading(false)
-          }, 2000);
+         sendLoadingErr()
         }
       }
     } catch (err: any) {
       console.log("sendJoin err", err)
-      setLoadingState("error")
-      setLoadingText("交易失败")
-      setTimeout(() => {
-        setLoadingState("")
-        setLoading(false)
-      }, 2000);
+      sendLoadingErr()
     }
   }
 
@@ -306,14 +276,9 @@ function Plan() {
         if (receipt !== null) {
           if (receipt.status && receipt.status == 1) {
             init()
-            setLoadingState("success")
-            setLoadingText("交易成功")
-            setTimeout(() => {
-              setLoading(false)
-              setLoadingState("")
-            }, 2000);
+            sendLoadingSuccess()
           } else {
-            sendTakeBackLoadingErr()
+            sendLoadingErr()
           }
         }
 
@@ -332,18 +297,13 @@ function Plan() {
           if (receipt !== null) {
             if (receipt.status && receipt.status == 1) {
               init()
-              setLoadingState("success")
-              setLoadingText("交易成功")
-              setTimeout(() => {
-                setLoading(false)
-                setLoadingState("")
-              }, 2000);
+              sendLoadingSuccess()
             } else {
-              sendTakeBackLoadingErr()
+              sendLoadingErr()
             }
           }
         } catch (err: any) {
-          sendTakeBackLoadingErr()
+          sendLoadingErr()
 
         }
       }
@@ -365,28 +325,21 @@ function Plan() {
           if (receipt !== null) {
             if (receipt.status && receipt.status == 1) {
               init()
-              setLoadingState("success")
-              setLoadingText("交易成功")
-              setTimeout(() => {
-                setLoading(false)
-                setLoadingState("")
-              }, 2000);
+              sendLoadingSuccess()
             } else {
-              sendTakeBackLoadingErr()
+              sendLoadingErr()
             }
           } else {
             console.log(2)
           }
-
         } catch (error) {
-          sendTakeBackLoadingErr()
+          sendLoadingErr()
         }
-
       }
     }
   }
 
-  const sendTakeBackLoadingErr = () => {
+  const sendLoadingErr = () => {
     setLoadingState("error")
     setLoadingText("交易失败")
     setTimeout(() => {
@@ -394,6 +347,18 @@ function Plan() {
       setLoading(false)
     }, 2000);
   }
+
+  const sendLoadingSuccess = () => {
+    setLoadingState("success")
+    setLoadingText("交易成功")
+    setTimeout(() => {
+      setLoading(false)
+      setLoadingState("")
+    }, 2000);
+  }
+
+ 
+
 
   return (<>
     <HeadBar />

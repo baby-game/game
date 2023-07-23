@@ -110,34 +110,36 @@ function Ipo() {
                 if (receipt !== null) {
                     if (receipt.status && receipt.status == 1) {
                         init()
-                        setLoadingState("success")
-                        setLoadingText("交易成功")
-                        setTimeout(() => {
-                            setLoading(false)
-                            setLoadingState("")
-                        }, 2000);
+                        sendLoadingSuccess()
                     } else {
-                        setLoadingState("error")
-                        setLoadingText("交易失败")
-                        setTimeout(() => {
-                            setLoadingState("")
-                            setLoading(false)
-                        }, 2000);
+                        sendLoadingErr()
                     }
                 }
             } catch (err: any) {
 
                 console.log("sendJoin err", err)
-
-                setLoadingState("error")
-                setLoadingText("交易失败")
-                setTimeout(() => {
-                    setLoadingState("")
-                    setLoading(false)
-                }, 2000);
+                sendLoadingErr()
             }
         }
     }
+
+    const sendLoadingErr = () => {
+        setLoadingState("error")
+        setLoadingText("交易失败")
+        setTimeout(() => {
+          setLoadingState("")
+          setLoading(false)
+        }, 2000);
+      }
+    
+      const sendLoadingSuccess = () => {
+        setLoadingState("success")
+        setLoadingText("交易成功")
+        setTimeout(() => {
+          setLoading(false)
+          setLoadingState("")
+        }, 2000);
+      }
 
     const sendApprove = async (approveContract: any, approveAddress: string, send: Function, leaveType?: number) => {
         setLoadingState("loading")
