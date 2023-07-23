@@ -349,38 +349,39 @@ function Plan() {
       }
 
     } else {
-      if(new BigNumber(lastTime).isLessThan(status1)){
+      if (new BigNumber(lastTime).isLessThan(status1)) {
         try {
-          if (!new BigNumber(lastTime).isLessThan(status1)) {
-            const gas: any = await babyContract?.estimateGas.reimburse({ from: account })
-            console.log("sendJoin gas", gas)
-            const response = await babyContract?.reimburse({
-              from: account,
-              gasLimit: gas.mul(105).div(100)
-            });
-  
-            let provider = new ethers.providers.Web3Provider(library.provider);
-  
-            let receipt = await provider.waitForTransaction(response.hash);
-            if (receipt !== null) {
-              if (receipt.status && receipt.status == 1) {
-                init()
-                setLoadingState("success")
-                setLoadingText("交易成功")
-                setTimeout(() => {
-                  setLoading(false)
-                  setLoadingState("")
-                }, 2000);
-              } else {
-                sendTakeBackLoadingErr()
-              }
+          console.log(1)
+          const gas: any = await babyContract?.estimateGas.reimburse({ from: account })
+          console.log("sendJoin gas", gas)
+          const response = await babyContract?.reimburse({
+            from: account,
+            gasLimit: gas.mul(105).div(100)
+          });
+
+          let provider = new ethers.providers.Web3Provider(library.provider);
+
+          let receipt = await provider.waitForTransaction(response.hash);
+          if (receipt !== null) {
+            if (receipt.status && receipt.status == 1) {
+              init()
+              setLoadingState("success")
+              setLoadingText("交易成功")
+              setTimeout(() => {
+                setLoading(false)
+                setLoadingState("")
+              }, 2000);
+            } else {
+              sendTakeBackLoadingErr()
             }
+          } else {
+            console.log(2)
           }
-  
+
         } catch (error) {
           sendTakeBackLoadingErr()
         }
-       
+
       }
     }
   }
@@ -714,13 +715,22 @@ function Plan() {
 
           <p className='mainTextColor font-bold w-1/2 '>入金记录</p>
           <p className=' text-center w-1/2' >
+
             {
-              new BigNumber(status1).isLessThanOrEqualTo(status2) && new BigNumber(lastTime).isLessThan(status1) ? <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
-              >提现 </span> : <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
-                onClick={() => {
-                  sendTakeBack()
-                }}
-              >提现 </span>
+              new BigNumber(status1).isLessThanOrEqualTo(status2)?  <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+              onClick={() => {
+                sendTakeBack()
+              }}
+            >提现 </span>:<>
+            {
+              new BigNumber(lastTime).isLessThan(status1) ? <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+              onClick={() => {
+                sendTakeBack()
+              }}
+            >申请补偿 </span>:<span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
+            >提现 </span>
+            }
+            </>
             }
 
           </p>
