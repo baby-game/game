@@ -50,6 +50,9 @@ function Plan() {
 
   const [status1, setStatus1] = useState<string>("0")
   const [status2, setStatus2] = useState<string>("0")
+  const [value, setValue] = useState<string>("0")
+
+
 
   useEffect(() => {
     init()
@@ -75,6 +78,7 @@ function Plan() {
     let data = await babyContract?.getUser(account)
     console.log("getUser", data)
     setLastTime(data.lastSettleTime.toString())
+    setValue(data.value.toString())
     // setReJoin(data.reJoin)
   }
 
@@ -158,7 +162,7 @@ function Plan() {
         }
       } catch (err: any) {
         console.log("sendJoin err", err)
-       sendLoadingErr()
+        sendLoadingErr()
       }
     }
   }
@@ -231,7 +235,7 @@ function Plan() {
 
           sendLoadingSuccess()
         } else {
-         sendLoadingErr()
+          sendLoadingErr()
         }
       }
     } catch (err: any) {
@@ -357,7 +361,7 @@ function Plan() {
     }, 2000);
   }
 
- 
+
 
 
   return (<>
@@ -682,20 +686,20 @@ function Plan() {
           <p className=' text-center w-1/2' >
 
             {
-              new BigNumber(status1).isLessThanOrEqualTo(status2)?  <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
-              onClick={() => {
-                sendTakeBack()
-              }}
-            >提现 </span>:<>
-            {
-              new BigNumber(lastTime).isLessThan(status1) ? <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
-              onClick={() => {
-                sendTakeBack()
-              }}
-            >申请补偿 </span>:<span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
-            >提现 </span>
-            }
-            </>
+              new BigNumber(status1).isLessThanOrEqualTo(status2) ? <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                onClick={() => {
+                  sendTakeBack()
+                }}
+              >提现 </span> : <>
+                {
+                  new BigNumber(lastTime).isLessThan(status1) && !new BigNumber(value).isZero() ? <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                    onClick={() => {
+                      sendTakeBack()
+                    }}
+                  >申请补偿 </span> : <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
+                  >提现 </span>
+                }
+              </>
             }
 
           </p>

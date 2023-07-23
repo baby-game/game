@@ -118,24 +118,23 @@ function Wealth() {
                         <h3 className='mainTextColor font-bold text-2xl text-center mb-2'>重生财富第{dataList.length - index}期</h3>
                         <div>
                             <div className=' flex'>
-                                <div className=' flex-1'>
+                                <div className=' w-52'>
                                     <div>
-                                        <div className='  flex '>
+                                        <div className='  flex mb-2'>
                                             <img
                                                 className=' w-5 h-5 mr-2'
                                                 src={menuIcon} alt="" />
-                                            <p className='text-gray-400 text-sm'>待提取重生财富奖励</p>
+                                            <p className='text-gray-400 text-sm '>待提取重生财富奖励</p>
                                         </div>
-                                        <p className='font-bold text-3xl leading-loose'>
-
+                                        <p className='font-bold text-xl  break-words '>
                                             {
                                                 ItemEarnings(item)
-                                            }
+                                            }000
                                             <span className=' text-sm ml-3'>USDT</span>
                                         </p>
                                     </div>
                                     <div>
-                                        <div className=' flex'>
+                                        <div className=' flex  my-2'>
                                             <div className=' flex-1 flex '>
                                                 <img
                                                     className='  w-5 h-5 mr-2'
@@ -143,27 +142,23 @@ function Wealth() {
                                                 <p className='text-gray-400 text-sm'>已提取重生财富奖励</p>
                                             </div>
                                         </div>
-                                        <p className='font-bold text-3xl leading-loose'>
-
-
+                                        <p className='font-bold text-xl break-words '>
                                             {
                                                 ItemUnEarnings(item)
                                             }
-
-                                            <span className=' text-sm ml-3'>USDT</span>
+                                            <span className=' text-sm ml-3 '>USDT</span>
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className=' w-24'>
-                                    <p className=' text-center'>
+                                <div className=' flex-1'>
+                                    <p className='  text-right'>
                                         {
                                             new BigNumber(item.startDayIndex.toString()).isGreaterThan(item.endDayIndex.toString()) ? <span className=' border-solid border rounded-3xl py-1 px-6 text-gray-400 font-bold  border-gray-400 cursor-pointer'>提现</span> : <span className=' border-solid border rounded-3xl py-1 px-6   mainTextColor font-bold borderMain cursor-pointer'
                                                 onClick={() => {
                                                     sendGetReimburse(index)
                                                 }}>提现</span>
                                         }
-
                                     </p>
                                 </div>
                             </div>
@@ -171,22 +166,6 @@ function Wealth() {
                     </div>
                 })
             }
-
-            {/* 
-            1 <= 2  正常执行
-
-            1 > 2  lasttime >= 1 
-
-
-            1000 * 3000  
-
-
-            staert-end
-
-        start < end  
-        
-        amount  300 + start-end 
-         */}
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
                 <p className=' indent-8 text-sm'>
