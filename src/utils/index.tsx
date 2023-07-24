@@ -1,6 +1,4 @@
 import BigNumber from "bignumber.js";
-const dayTime = process.env.REACT_APP_DAY + ""
-
 
 export const toTokenValue = (value: any, decimals: number, mantissa?: number) => {
   if (mantissa) return new BigNumber(value).multipliedBy(10 ** decimals).toFixed(mantissa, 1);

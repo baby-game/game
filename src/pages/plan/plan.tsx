@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, FormControlLabel, InputAdornment, Radio, RadioGroup, Switch, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { getProviderOrSigner, useBabyGameContract } from '../../hooks/useContract'
+import { getProviderOrSigner, useBabyGameContract, useRouterContract } from '../../hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
 import { ItemReward, formattingDate, verify } from '../../utils/formatting'
 import { fromTokenValue, toTokenValue } from '../../utils'
@@ -11,6 +11,7 @@ import { MAX_UNIT256 } from '../../constants'
 import { Contract } from '@ethersproject/contracts'
 import ERC20ABI from '../../abi/ERC20.json';
 import HeadBar from '../../components/headbar'
+import { useTranslation } from 'react-i18next'
 
 const ethers = require('ethers');
 
@@ -18,9 +19,11 @@ const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 const usdtAddr = process.env.REACT_APP_TOKEN_USDT + ""
 const dayTime = process.env.REACT_APP_DAY + ""
 
+const tokenkAddr = process.env.REACT_APP_TOKEN_TOKEN + ""
 
 function Plan() {
-
+  const { t } = useTranslation()
+  const routerContract = useRouterContract();
   const babyContract = useBabyGameContract(BabyGameAddr)
   const { account, library } = useWeb3React()
   const [loading, setLoading] = useState<boolean>(false);
@@ -110,21 +113,16 @@ function Plan() {
     }
   }
 
-  // function join(uint amount, uint amoutOutMin, uint baseDays,  bool flag) external; //flag: true, 用账户余额,false: 用钱包余额 baseDays: 18
-
   const sendJoin = async () => {
 
     let usdtErc20 = new Contract(usdtAddr, ERC20ABI, getProviderOrSigner(library, account || "") as any);
     const allowance: any = await usdtErc20?.allowance(account, BabyGameAddr);
     const decimals: any = await usdtErc20?.decimals()
-    console.log("sendJoin decimals", decimals)
-    console.log("sendJoin allowance", allowance.toString())
     setLoading(true)
     setLoadingState("loading")
-    setLoadingText("交易打包中")
+    setLoadingText(`${t("TransactionPacking")}`)
     let flag
     if (joinWallet === "balance") {
-      console.log(" balance =", joinWallet)
       flag = false
     } else if (joinWallet === "accountBalance") {
       console.log(" accountBalance=", joinWallet)
@@ -135,13 +133,13 @@ function Plan() {
       sendApprove(usdtErc20, BabyGameAddr, sendJoin)
     } else {
       setLoadingState("loading")
-      setLoadingText("交易打包中")
+      setLoadingText(`${t("TransactionPacking")}`)
       try {
-
-        const gas: any = await babyContract?.estimateGas.join(toTokenValue(sendAmount, decimals), 0, baseDays, flag, { from: account })
+        let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(5).multipliedBy(55).dividedBy(10000).toString(), decimals), [usdtAddr, tokenkAddr])
+        console.log("sendJoin info", info, info.toString(),info[1].toString())
+        const gas: any = await babyContract?.estimateGas.join(toTokenValue(sendAmount, decimals), info[1].toString(), baseDays, flag, { from: account })
         console.log("sendJoin gas", gas)
-
-        const response = await babyContract?.join(toTokenValue(sendAmount, decimals), 0, baseDays, flag, {
+        const response = await babyContract?.join(toTokenValue(sendAmount, decimals), info[1].toString(), baseDays, flag, {
           from: account,
           gasLimit: gas.mul(105).div(100)
         });
@@ -169,7 +167,7 @@ function Plan() {
 
   const sendApprove = async (approveContract: any, approveAddress: string, send: Function, leaveType?: number) => {
     setLoadingState("loading")
-    setLoadingText("授权中")
+    setLoadingText(`${t("Authorizing")}`)
     try {
       const gas: any = await approveContract?.estimateGas.approve(approveAddress, MAX_UNIT256, { from: account });
       const response = await approveContract?.approve(approveAddress, MAX_UNIT256, {
@@ -182,7 +180,7 @@ function Plan() {
       if (receipt !== null) {
         if (receipt.status && receipt.status == 1) {
           setLoadingState("success")
-          setLoadingText("授权成功")
+          setLoadingText(`${t("AuthorizationSuccessful")}`)
           if (leaveType != undefined) {
             send(leaveType)
           } else {
@@ -190,7 +188,7 @@ function Plan() {
           }
         } else {
           setLoadingState("error")
-          setLoadingText("授权失败")
+          setLoadingText(`${t("AuthorizationFailed")}`)
 
           setTimeout(() => {
             setLoadingState("")
@@ -200,49 +198,14 @@ function Plan() {
       }
     } catch (err: any) {
       setLoadingState("error")
-      setLoadingText("授权失败")
+      setLoadingText(`${t("AuthorizationFailed")}`)
       setTimeout(() => {
         setLoadingState("")
         setLoading(false)
       }, 2000);
     }
   }
-
-
-  // reJoin
-  const sendReJoin = async () => {
-    setLoading(true)
-    setLoadingState("loading")
-    setLoadingText("交易打包中")
-    // let flag = !reJoin
-    let flag = true
-
-    try {
-      const gas: any = await babyContract?.estimateGas.reJoin(flag, { from: account })
-      console.log("sendJoin gas", gas)
-      const response = await babyContract?.reJoin(flag, {
-        from: account,
-        gasLimit: gas.mul(105).div(100)
-      });
-
-      let provider = new ethers.providers.Web3Provider(library.provider);
-
-      let receipt = await provider.waitForTransaction(response.hash);
-      if (receipt !== null) {
-        if (receipt.status && receipt.status == 1) {
-          init()
-          // setReJoinPop(false)
-
-          sendLoadingSuccess()
-        } else {
-          sendLoadingErr()
-        }
-      }
-    } catch (err: any) {
-      console.log("sendJoin err", err)
-      sendLoadingErr()
-    }
-  }
+  
 
   //takeBack
   const sendTakeBack = async () => {
@@ -250,7 +213,7 @@ function Plan() {
     if (new BigNumber(accountBalance).isZero()) {
       setLoading(true)
       setLoadingState("error")
-      setLoadingText("账户余额不足")
+      setLoadingText(`${t("InsufficientAccountBalance")}`)
       setTimeout(() => {
         setLoadingState("")
         setLoading(false)
@@ -259,7 +222,7 @@ function Plan() {
     }
     setLoading(true)
     setLoadingState("loading")
-    setLoadingText("交易打包中")
+    setLoadingText(`${t("TransactionPacking")}`)
 
     if (new BigNumber(status1).isLessThanOrEqualTo(status2)) {
       try {
@@ -339,7 +302,7 @@ function Plan() {
 
   const sendLoadingErr = () => {
     setLoadingState("error")
-    setLoadingText("交易失败")
+    setLoadingText(`${t("transactionFailed")}`)
     setTimeout(() => {
       setLoadingState("")
       setLoading(false)
@@ -348,7 +311,7 @@ function Plan() {
 
   const sendLoadingSuccess = () => {
     setLoadingState("success")
-    setLoadingText("交易成功")
+    setLoadingText(`${t("successfulTransaction")}`)
     setTimeout(() => {
       setLoading(false)
       setLoadingState("")
@@ -358,7 +321,7 @@ function Plan() {
   const sendLoadingAmount = () => {
     setLoading(true)
     setLoadingState("error")
-    setLoadingText("请填写数量")
+    setLoadingText(`${t("PleaseFillInTheQuantity")}`)
     setTimeout(() => {
       setLoadingState("")
       setLoading(false)
@@ -389,12 +352,12 @@ function Plan() {
       >
         <DialogContent>
           <div>
-            <p className=" font-bold text-xl mainTextColor mb-2  ">参与做市</p>
+            <p className=" font-bold text-xl mainTextColor mb-2  ">{t("ParticipateInMarketMaking")}</p>
           </div>
           <div>
             <div>
               <p className=' text-sm'>
-                参与做市金额: <span className='font-bold text-xl '>{sendAmount} </span> <span className=' text-sm ml-1 font-bold '>USDT</span>
+                {t("ParticipateInMarketMakingAmount")}: <span className='font-bold text-xl '>{sendAmount} </span> <span className=' text-sm ml-1 font-bold '>USDT</span>
               </p>
             </div>
             <RadioGroup
@@ -416,7 +379,7 @@ function Plan() {
                 '&.Mui-checked': {
                   color: "rgb(60, 125, 104)",
                 },
-              }} />} label="钱包余额" />
+              }} />} label={`${t("walletBalance")}`} />
               <FormControlLabel value="accountBalance" sx={{
                 '& .MuiTypography-root': {
                   fontSize: "0.875rem"
@@ -426,7 +389,7 @@ function Plan() {
                 '&.Mui-checked': {
                   color: "rgb(60, 125, 104)",
                 },
-              }} />} label="账户余额" />
+              }} />} label={`${t("AccountBalance")}`} />
             </RadioGroup>
           </div>
 
@@ -436,7 +399,7 @@ function Plan() {
                 onClick={() => {
                   sendJoin()
                 }}
-              >确认</span>
+              > {t("confirm")}</span>
             </p>
           </div>
         </DialogContent>
@@ -444,7 +407,7 @@ function Plan() {
       <div className='bg-white rounded-2xl  mt-32  mx-3 mb-5 p-3'>
         <div className='flex text-center'>
           <div className=' flex-1'>
-            <p className=' text-sm text-gray-400'>USDT 钱包余额</p>
+            <p className=' text-sm text-gray-400'>USDT {t("walletBalance")}</p>
             <p className=' font-bold text-xl leading-loose'>
               {
                 usdtAddr && account && <TokenBalance token={usdtAddr} addr={account + ""} change={change} decimalPlaces={2} />
@@ -452,7 +415,7 @@ function Plan() {
             </p>
           </div>
           <div className=' flex-1'>
-            <p className=' text-sm text-gray-400'>USDT 账户余额</p>
+            <p className=' text-sm text-gray-400'>USDT {t("AccountBalance")}</p>
             <p className=' font-bold text-xl leading-loose break-words whitespace-normal'>{fromTokenValue(accountBalance, 18, 2)}</p>
           </div>
         </div>
@@ -465,7 +428,7 @@ function Plan() {
               width: "100%",
               height: "16px !important"
             }}
-            placeholder='点击或输入数量'
+            placeholder={`${t("ClickOrEnterTheQuantity")}`}
             value={sendAmount}
             onChange={(e) => {
               setSendAmount(verify(e.target.value))
@@ -531,7 +494,7 @@ function Plan() {
             <div>
               <p style={{
                 lineHeight: "50px"
-              }} className=' text-gray-400'>3-18天合约做市</p>
+              }} className=' text-gray-400'>3-18{t("dayContractMarketMaking")}</p>
               <p className=' font-bold text-xl break-words whitespace-normal'>
               </p>
             </div>
@@ -551,7 +514,7 @@ function Plan() {
                       setJoinPop(true)
                     }
                   }}
-                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+                >{t("ParticipateInMarketMaking")} </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>{t("ParticipateInMarketMaking")} </span>
               }
             </p>
           </div>
@@ -564,7 +527,7 @@ function Plan() {
             <div>
               <p style={{
                 lineHeight: "50px"
-              }} className=' text-gray-400'>3-48天合约做市</p>
+              }} className=' text-gray-400'>3-48{t("dayContractMarketMaking")}</p>
               <p className=' font-bold text-xl break-words whitespace-normal'>
               </p>
             </div>
@@ -584,7 +547,7 @@ function Plan() {
                       setJoinPop(true)
                     }
                   }}
-                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+                >{t("ParticipateInMarketMaking")} </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>{t("ParticipateInMarketMaking")} </span>
               }
             </p>
           </div>
@@ -597,7 +560,7 @@ function Plan() {
             <div>
               <p style={{
                 lineHeight: "50px"
-              }} className=' text-gray-400'>3-98天合约做市</p>
+              }} className=' text-gray-400'>3-98{t("dayContractMarketMaking")}</p>
               <p className=' font-bold text-xl break-words whitespace-normal'>
               </p>
             </div>
@@ -617,7 +580,7 @@ function Plan() {
                       setJoinPop(true)
                     }
                   }}
-                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+                >{t("ParticipateInMarketMaking")} </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'> {t("ParticipateInMarketMaking")}</span>
               }
             </p>
           </div>
@@ -630,7 +593,7 @@ function Plan() {
             <div>
               <p style={{
                 lineHeight: "50px"
-              }} className=' text-gray-400'>3-188天合约做市</p>
+              }} className=' text-gray-400'>3-188{t("dayContractMarketMaking")}</p>
               <p className=' font-bold text-xl break-words whitespace-normal'>
               </p>
             </div>
@@ -650,7 +613,7 @@ function Plan() {
                       setJoinPop(true)
                     }
                   }}
-                >参与做市 </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>参与做市 </span>
+                >{t("ParticipateInMarketMaking")} </span> : <span className=' border-solid border rounded-3xl py-2 px-4  font-bold  cursor-pointer text-gray-400   border-gray-400'>{t("ParticipateInMarketMaking")} </span>
               }
             </p>
           </div>
@@ -660,7 +623,7 @@ function Plan() {
       <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
         <div className=' flex'>
 
-          <p className='mainTextColor font-bold w-1/2 '>入金记录</p>
+          <p className='mainTextColor font-bold w-1/2 '> {t("depositRecord")}</p>
           <p className=' text-center w-1/2' >
 
             {
@@ -668,14 +631,14 @@ function Plan() {
                 onClick={() => {
                   sendTakeBack()
                 }}
-              >提现 </span> : <>
+              >{t("withdraw")} </span> : <>
                 {
                   new BigNumber(lastTime).isLessThan(status1) && !new BigNumber(value).isZero() ? <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
                     onClick={() => {
                       sendTakeBack()
                     }}
-                  >申请补偿 </span> : <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
-                  >提现 </span>
+                  > {t("applyForCompensation")}</span> : <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
+                  >{t("withdraw")} </span>
                 }
               </>
             }
@@ -691,14 +654,14 @@ function Plan() {
               return <div className={new BigNumber(lastTime).isGreaterThan(item.dueTime.toString()) ? "text-xs rounded-md border p-1 m-1 " : "text-xs rounded-md border p-1 m-1 borderMain"} key={item.createTime.toString()}>
                 <div className=' flex'>
                   <div className=' w-1/2'>
-                    <p>本金: <span className='mainTextColor'>{fromTokenValue(item.value, 18, 3)}</span></p>
+                    <p>{t("principal")}: <span className='mainTextColor'>{fromTokenValue(item.value, 18, 3)}</span></p>
                   </div>
                   <div className=' w-1/2'>
-                    <p>收益: <span className='mainTextColor'>{fromTokenValue(ItemReward(item), 18, 2)}</span></p>
+                    <p>{t("income")}: <span className='mainTextColor'>{fromTokenValue(ItemReward(item), 18, 2)}</span></p>
                   </div>
                 </div>
                 <div>
-                  <p>周期: <span className='mainTextColor'>{formattingDate(item.createTime)}</span>-<span className='mainTextColor'>{formattingDate(item.dueTime)}</span></p>
+                  <p>{t("cycle")}: <span className='mainTextColor'>{formattingDate(item.createTime)}</span>-<span className='mainTextColor'>{formattingDate(item.dueTime)}</span></p>
                 </div>
               </div>
             })

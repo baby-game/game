@@ -9,6 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import TipPop from "../../components/pop/TipPop";
 import HeadBar from "../../components/headbar";
+import { useTranslation } from "react-i18next";
 const ethers = require('ethers');
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 
@@ -17,18 +18,15 @@ export default function Home({ }) {
   const babyContract = useBabyGameContract(BabyGameAddr)
   const { account, library } = useWeb3React()
   const params = useParams()
+  const { t } = useTranslation()
 
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<string>("loading")
   const [loadingText, setLoadingText] = useState<string>("")
 
-
   const [isTopInviter, setIsTopInviter] = useState<boolean>(false)
-
   const [isHaveInviter, setIsHaveInviter] = useState<boolean>(false)
-
   const [shareAddr, setShareAddr] = useState<string>("")
-
   const [sharePop, setSharePop] = useState<boolean>(false)
 
 
@@ -70,7 +68,7 @@ export default function Home({ }) {
     if (shareAddr == "" || !isAddress(shareAddr)) {
       setLoading(true)
       setLoadingState("error")
-      setLoadingText("请填写正确的地址")
+      setLoadingText(`${t("PleaseFillInTheCorrectAddress")}`)
       setTimeout(() => {
         setLoadingState("")
         setLoading(false)
@@ -79,7 +77,7 @@ export default function Home({ }) {
     }
     setLoading(true)
     setLoadingState("loading")
-    setLoadingText("交易打包中")
+    setLoadingText(`${t("TransactionPacking")}`)
     try {
       const gas: any = await babyContract?.estimateGas.register(shareAddr, { from: account })
       console.log("sendJoin gas", gas)
@@ -94,33 +92,34 @@ export default function Home({ }) {
         if (receipt.status && receipt.status == 1) {
           init()
           setSharePop(false)
-          setLoadingState("success")
-          setLoadingText("交易成功")
-          setTimeout(() => {
-            setLoading(false)
-            setLoadingState("")
-          }, 2000);
+          sendLoadingSuccess()
         } else {
-          setLoadingState("error")
-          setLoadingText("交易失败")
-          setTimeout(() => {
-            setLoadingState("")
-            setLoading(false)
-          }, 2000);
+          sendLoadingErr()
         }
       }
     } catch (err: any) {
       console.log("sendJoin err", err)
-      // setSharePop(true)
-      setLoadingState("error")
-      setLoadingText("交易失败")
-      setTimeout(() => {
-        setLoadingState("")
-        setLoading(false)
-      }, 2000);
+      sendLoadingErr()
     }
   }
 
+  const sendLoadingErr = () => {
+    setLoadingState("error")
+    setLoadingText(`${t("transactionFailed")}`)
+    setTimeout(() => {
+      setLoadingState("")
+      setLoading(false)
+    }, 2000);
+  }
+
+  const sendLoadingSuccess = () => {
+    setLoadingState("success")
+    setLoadingText(`${t("successfulTransaction")}`)
+    setTimeout(() => {
+      setLoading(false)
+      setLoadingState("")
+    }, 2000);
+  }
 
 
   return <>
@@ -146,14 +145,14 @@ export default function Home({ }) {
       >
         <DialogContent>
           <div>
-            <p className=" font-bold text-xl mainTextColor mb-2  ">邀请链接</p>
+            <p className=" font-bold text-xl mainTextColor mb-2  ">{t("inviteLink")}</p>
           </div>
           <TextField size='small'
             style={{
               width: "100%",
               height: "16px !important"
             }}
-            placeholder='填写推荐人地址'
+            placeholder={`${t("FillInThe")}`}
             value={shareAddr}
             onChange={(e) => {
               setShareAddr(e.target.value)
@@ -166,7 +165,7 @@ export default function Home({ }) {
                 onClick={() => {
                   sendRegister()
                 }}
-              >确认</span>
+              > {t("confirm")}</span>
             </p>
           </div>
         </DialogContent>
@@ -187,22 +186,13 @@ export default function Home({ }) {
 
       <div className=" mx-3 pb-10 text-gray-400">
         <p className="indent-8 pb-3">
-          BABY Social DAO致力于Web3.0、Metaverse和NFT领域，让世界各地的区块链爱好者通过自动做市商竞赛寻找宝贝来重新定义资源融合。这样，区块链爱好者可以愉快地参与而不影响他们的日常生活和工作，同时获得相应的区块链财富。
+          {t("home1")}
         </p>
         <p className="indent-8">
-          基于SOD综合应用的唯一性和独特性，BABY Social DAO非常看好其发展前景，社区成员将通过宝贝计划获取SOD筹码。
+          {t("home2")}
         </p>
       </div>
 
-      {/* <div className=" text-center">
-      <p>
-        <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-          onClick={() => {
-            navigate("/ipo")
-          }}
-        >公会申请 </span>
-      </p>
-    </div> */}
 
       <div className=" text-center mt-5">
         <p>
@@ -215,7 +205,7 @@ export default function Home({ }) {
                 return
               }
             }}
-          >宝贝计划 </span>
+          > {t("BabyPlan")} </span>
         </p>
       </div>
 
@@ -226,19 +216,11 @@ export default function Home({ }) {
               if (isHaveInviter || isTopInviter) {
                 navigate("/community")
               } else {
-                // setLoading(true)
-                // setLoadingState("error")
-                // setLoadingText("请填写推荐人地址")
-                // setTimeout(() => {
-                //   setSharePop(true)
-                //   setLoadingState("")
-                //   setLoading(false)
-                // }, 2000);
                 setSharePop(true)
                 return
               }
             }}
-          >我的社区 </span>
+          > {t("myCommunity")}</span>
         </p>
       </div>
 
@@ -249,19 +231,11 @@ export default function Home({ }) {
               if (isHaveInviter || isTopInviter) {
                 navigate("/wealth")
               } else {
-                // setLoading(true)
-                // setLoadingState("error")
-                // setLoadingText("请填写推荐人地址")
-                // setTimeout(() => {
-                //   setSharePop(true)
-                //   setLoadingState("")
-                //   setLoading(false)
-                // }, 2000);
                 setSharePop(true)
                 return
               }
             }}
-          >重生财富 </span>
+          > {t("rebornWealth")}</span>
         </p>
       </div>
     </div>

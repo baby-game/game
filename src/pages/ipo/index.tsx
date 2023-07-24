@@ -8,13 +8,15 @@ import BigNumber from "bignumber.js";
 import { toTokenValue } from '../../utils';
 import TipPop from '../../components/pop/TipPop';
 import HeadBar from '../../components/headbar';
+import { useTranslation } from 'react-i18next';
 
 const ethers = require('ethers');
 
 const ipoAddr = process.env.REACT_APP_CONTRACT_IPO + ""
 const usdtAddr = process.env.REACT_APP_TOKEN_USDT + ""
-const sodAddr = process.env.REACT_APP_TOKEN_SOD + ""
+const tokenkAddr = process.env.REACT_APP_TOKEN_TOKEN + ""
 function Ipo() {
+    const { t } = useTranslation()
 
     const ipoContract = useIpoContract(ipoAddr)
     const routerContract = useRouterContract();
@@ -41,10 +43,6 @@ function Ipo() {
         getJoined();
         getLeaves();
     }
-    // function leaves () external view returns (uint a, uint b, uint c);
-    // function join (uint gType) external; 0, 1, 2
-    // function joined (address) external view returns (bool);
-    // function closed() external view returns (bool);
 
     const getJoined = async () => {
         let data = await ipoContract?.joined(account)
@@ -59,7 +57,6 @@ function Ipo() {
         setLeave2(data.b.toString())
         setLeave3(data.c.toString())
     }
-
 
     const sendJoin = async (leaveType: number) => {
         console.log("sendJoin leaveType", leaveType)
@@ -77,25 +74,22 @@ function Ipo() {
 
         const decimals: any = await usdtErc20?.decimals()
 
-        console.log("sendJoin decimals", decimals)
-        console.log("sendJoin allowance", allowance.toString())
-        console.log("sendJoin sendAmount", sendAmount)
         setLoading(true)
 
         setLoadingState("loading")
-        setLoadingText("交易打包中")
+        setLoadingText(`${t("TransactionPacking")}`)
 
 
         if (new BigNumber(allowance.toString()).isLessThan(toTokenValue(sendAmount, decimals))) {
             sendApprove(usdtErc20, ipoAddr, sendJoin, leaveType)
         } else {
             setLoadingState("loading")
-            setLoadingText("交易打包中")
+            setLoadingText(`${t("TransactionPacking")}`)
             try {
 
-                let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(55).dividedBy(200).toString(), decimals), [usdtAddr, sodAddr])
+                let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(55).dividedBy(200).toString(), decimals), [usdtAddr, tokenkAddr])
 
-                console.log("sendJoin info", info, info.toString())
+                console.log("sendJoin info", info, info.toString(),info[1].toString())
 
                 const gas: any = await ipoContract?.estimateGas.join(leaveType, info[1].toString(), { from: account })
                 console.log("sendJoin gas", gas)
@@ -125,25 +119,28 @@ function Ipo() {
 
     const sendLoadingErr = () => {
         setLoadingState("error")
-        setLoadingText("交易失败")
+        setLoadingText(`${t("transactionFailed")}`)
         setTimeout(() => {
-          setLoadingState("")
-          setLoading(false)
+            setLoadingState("")
+            setLoading(false)
         }, 2000);
-      }
-    
-      const sendLoadingSuccess = () => {
+    }
+
+    const sendLoadingSuccess = () => {
         setLoadingState("success")
-        setLoadingText("交易成功")
+        setLoadingText(`${t("successfulTransaction")}`)
         setTimeout(() => {
-          setLoading(false)
-          setLoadingState("")
+            setLoading(false)
+            setLoadingState("")
         }, 2000);
-      }
+    }
+
+
 
     const sendApprove = async (approveContract: any, approveAddress: string, send: Function, leaveType?: number) => {
         setLoadingState("loading")
-        setLoadingText("授权中")
+        setLoadingText(`${t("Authorizing")}`)
+
         try {
             const gas: any = await approveContract?.estimateGas.approve(approveAddress, MAX_UNIT256, { from: account });
             const response = await approveContract?.approve(approveAddress, MAX_UNIT256, {
@@ -156,7 +153,8 @@ function Ipo() {
             if (receipt !== null) {
                 if (receipt.status && receipt.status == 1) {
                     setLoadingState("success")
-                    setLoadingText("授权成功")
+                    setLoadingText(`${t("AuthorizationSuccessful")}`)
+
                     if (leaveType != undefined) {
                         send(leaveType)
                     } else {
@@ -164,8 +162,7 @@ function Ipo() {
                     }
                 } else {
                     setLoadingState("error")
-                    setLoadingText("授权失败")
-
+                    setLoadingText(`${t("AuthorizationFailed")}`)
                     setTimeout(() => {
                         setLoadingState("")
                         setLoading(false)
@@ -174,7 +171,7 @@ function Ipo() {
             }
         } catch (err: any) {
             setLoadingState("error")
-            setLoadingText("授权失败")
+            setLoadingText(`${t("AuthorizationFailed")}`)
             setTimeout(() => {
                 setLoadingState("")
                 setLoading(false)
@@ -188,23 +185,23 @@ function Ipo() {
         <div className='main'>
             <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
             <div className=' pt-32  mx-3 pb-10'>
-                <h3 className="indent-8 font-bold text-xl mainTextColor">BABY社交道牵头面向全球招募公会，旨在汇聚更多KOL和品牌社群，共同参与社区治理 </h3>
+                <h3 className="indent-8 font-bold text-xl mainTextColor">{t("ipo1")} </h3>
             </div>
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
-                <h3 className='mainTextColor font-bold text-2xl mt-2'>全球创世公会</h3>
+                <h3 className='mainTextColor font-bold text-2xl mt-2'>{t("GlobalCreationAssociation")} </h3>
                 <div className=' flex my-3'>
                     <div className=' flex-1 text-center'>
-                        <p className='  text-gray-400 text-sm'>名额</p>
+                        <p className='  text-gray-400 text-sm'>{t("Quota")} </p>
                         <p className='  font-bold text-3xl leading-loose'>{leave1}</p>
                     </div>
                     <div className=' flex-1 text-center'>
-                        <p className='text-gray-400 text-sm'>金额</p>
+                        <p className='text-gray-400 text-sm'>{t("theAmount")} </p>
                         <p className='  font-bold text-3xl leading-loose'>10000 <span className=' text-sm'>USDT</span></p>
                     </div>
                 </div>
                 <div>
-                    <p className='text-gray-400'>获赠S7级别，享受创世公会专项奖等四重收益</p>
+                    <p className='text-gray-400'>{t("ipo2")} </p>
                 </div>
                 <div className=" text-center my-2 py-2">
                     <p>
@@ -220,19 +217,19 @@ function Ipo() {
             </div>
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
-                <h3 className='mainTextColor font-bold text-2xl mt-2'>全球超级公会</h3>
+                <h3 className='mainTextColor font-bold text-2xl mt-2'>{t("GlobalSuperGuild")} </h3>
                 <div className=' flex my-3'>
                     <div className=' flex-1 text-center'>
-                        <p className='  text-gray-400 text-sm'>名额</p>
+                        <p className='  text-gray-400 text-sm'>{t("Quota")} </p>
                         <p className='  font-bold text-3xl leading-loose'>{leave2}</p>
                     </div>
                     <div className=' flex-1 text-center'>
-                        <p className='text-gray-400 text-sm'>金额</p>
+                        <p className='text-gray-400 text-sm'>{t("theAmount")} </p>
                         <p className='  font-bold text-3xl leading-loose'>5000 <span className=' text-sm'>USDT</span></p>
                     </div>
                 </div>
                 <div>
-                    <p className='text-gray-400'>获赠S6级别，享受超级公会专项奖等四重收益</p>
+                    <p className='text-gray-400'>{t("ipo3")} </p>
                 </div>
                 <div className=" text-center my-2 py-2">
                     <p>
@@ -248,19 +245,19 @@ function Ipo() {
             </div>
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
-                <h3 className='mainTextColor font-bold text-2xl mt-2'>全球社区公会</h3>
+                <h3 className='mainTextColor font-bold text-2xl mt-2'>{t("GlobalCommunityGuild")} </h3>
                 <div className=' flex my-3'>
                     <div className=' flex-1 text-center'>
-                        <p className='  text-gray-400 text-sm'>名额</p>
+                        <p className='  text-gray-400 text-sm'>{t("Quota")} </p>
                         <p className='  font-bold text-3xl leading-loose'>{leave3}</p>
                     </div>
                     <div className=' flex-1 text-center'>
-                        <p className='text-gray-400 text-sm'>金额</p>
+                        <p className='text-gray-400 text-sm'>{t("theAmount")} </p>
                         <p className='  font-bold text-3xl leading-loose'>2000 <span className=' text-sm'>USDT</span></p>
                     </div>
                 </div>
                 <div>
-                    <p className='text-gray-400'>获赠S5级别，享受社区公会专项奖等四重收益</p>
+                    <p className='text-gray-400'>{t("ipo4")} </p>
                 </div>
                 <div className=" text-center my-2 py-2">
                     <p>
@@ -276,11 +273,10 @@ function Ipo() {
             </div>
 
             <div className=' pt-5 mx-3 pb-10'>
-                <p className=' indent-8 text-gray-400'>同一账户只能获得其中一个公会名额，熔断重生后公会资格仍保留</p>
+                <p className=' indent-8 text-gray-400'>{t("ipo5")}</p>
             </div>
         </div>
     </>
-
     )
 }
 

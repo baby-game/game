@@ -7,6 +7,7 @@ import TipPop from '../../components/pop/TipPop'
 import { fromTokenValue } from '../../utils'
 import BigNumber from "bignumber.js";
 import { Days } from '../../constants'
+import { useTranslation } from 'react-i18next'
 
 const ethers = require('ethers');
 
@@ -14,6 +15,8 @@ const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 const dayTime = process.env.REACT_APP_DAY + ""
 
 function Wealth() {
+    const { t } = useTranslation()
+
     const babyContract = useBabyGameContract(BabyGameAddr)
     const { account, library } = useWeb3React()
     const [dataList, setDataList] = useState<any>([])
@@ -39,7 +42,7 @@ function Wealth() {
     const sendGetReimburse = async (index: number) => {
 
         setLoadingState("loading")
-        setLoadingText("交易打包中")
+        setLoadingText(`${t("TransactionPacking")}`)
         try {
 
             const gas: any = await babyContract?.estimateGas.getReimburse(index, account, { from: account })
@@ -60,16 +63,13 @@ function Wealth() {
                 }
             }
         } catch (err: any) {
-
-            console.log("sendJoin err", err)
-
             sendLoadingErr()
         }
     }
 
     const sendLoadingErr = () => {
         setLoadingState("error")
-        setLoadingText("交易失败")
+        setLoadingText(`${t("transactionFailed")}`)
         setTimeout(() => {
             setLoadingState("")
             setLoading(false)
@@ -78,7 +78,7 @@ function Wealth() {
 
     const sendLoadingSuccess = () => {
         setLoadingState("success")
-        setLoadingText("交易成功")
+        setLoadingText(`${t("successfulTransaction")}`)
         setTimeout(() => {
             setLoading(false)
             setLoadingState("")
@@ -108,13 +108,13 @@ function Wealth() {
             <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
 
             <div className=' pt-32  mx-3 pb-10'>
-                {/* <h3 className="indent-8 font-bold text-xl mainTextColor">重生财富</h3> */}
+
             </div>
 
             {
                 dataList && dataList.map((item: any, index: number) => {
                     return <div className='bg-white rounded-2xl  mx-3 mb-5 p-3' key={index}>
-                        <h3 className='mainTextColor font-bold text-2xl text-center mb-2'>重生财富第{dataList.length - index}期</h3>
+                        <h3 className='mainTextColor font-bold text-2xl text-center mb-2'> {t("RebornFortune")}{dataList.length - index} {t("Expect")}</h3>
                         <div>
                             <div className=' flex'>
                                 <div className=' w-52'>
@@ -123,7 +123,7 @@ function Wealth() {
                                             <img
                                                 className=' w-5 h-5 mr-2'
                                                 src={menuIcon} alt="" />
-                                            <p className='text-gray-400 text-sm '>待提取重生财富奖励</p>
+                                            <p className='text-gray-400 text-sm '> {t("RebirthWealthRewardsToBeWithdrawn")}</p>
                                         </div>
                                         <p className='font-bold text-xl  break-words '>
                                             {
@@ -138,7 +138,7 @@ function Wealth() {
                                                 <img
                                                     className='  w-5 h-5 mr-2'
                                                     src={menuIcon} alt="" />
-                                                <p className='text-gray-400 text-sm'>已提取重生财富奖励</p>
+                                                <p className='text-gray-400 text-sm'> {t("RebirthFortuneRewardHasBeenWithdrawn")}</p>
                                             </div>
                                         </div>
                                         <p className='font-bold text-xl break-words '>
@@ -153,10 +153,10 @@ function Wealth() {
                                 <div className=' flex-1'>
                                     <p className='  text-right'>
                                         {
-                                            new BigNumber(item.startDayIndex.toString()).isGreaterThan(item.endDayIndex.toString()) ? <span className=' border-solid border rounded-3xl py-1 px-6 text-gray-400 font-bold  border-gray-400 cursor-pointer'>提现</span> : <span className=' border-solid border rounded-3xl py-1 px-6   mainTextColor font-bold borderMain cursor-pointer'
+                                            new BigNumber(item.startDayIndex.toString()).isGreaterThan(item.endDayIndex.toString()) ? <span className=' border-solid border rounded-3xl py-1 px-6 text-gray-400 font-bold  border-gray-400 cursor-pointer'> {t("withdraw")}</span> : <span className=' border-solid border rounded-3xl py-1 px-6   mainTextColor font-bold borderMain cursor-pointer'
                                                 onClick={() => {
                                                     sendGetReimburse(index)
-                                                }}>提现</span>
+                                                }}>{t("withdraw")}</span>
                                         }
                                     </p>
                                 </div>
@@ -165,15 +165,13 @@ function Wealth() {
                     </div>
                 })
             }
-
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
                 <p className=' indent-8 text-sm'>
-                    每期熔断时，50%个人做市本金退回，另外50%按1.5倍重生财富奖励。以SOD实时价格，每日（8:00）金本位奖励SOD，按照300天周期平均固定。
+                    {t("plan1")}
                 </p>
             </div>
         </div>
     </>
-
     )
 }
 

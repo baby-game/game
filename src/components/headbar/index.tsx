@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import { formatAccount } from '../../utils/formatting';
 import walletIcon from '../../image/wallet.png'
 import logo from '../../image/logo.png'
-import { communityIcon, homeIcon, menuIcon, planIcon, wealthIcon } from '../../image';
+import { communityIcon, enusIcon, enznIcon, homeIcon, languageIcon, menuIcon, planIcon, wealthIcon } from '../../image';
 import Drawer from '@mui/material/Drawer';
 import { useEffect, useState } from 'react';
 import List from '@mui/material/List';
@@ -13,6 +13,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useBabyGameContract } from '../../hooks/useContract';
 import { AddressZero } from '@ethersproject/constants'
 import TipPop from '../pop/TipPop';
+import { useTranslation } from 'react-i18next';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import Collapse from '@mui/material/Collapse';
+import i18n from '../../i18n';
 
 declare const window: Window & { ethereum: any, web3: any };
 
@@ -24,6 +28,8 @@ interface IHeadBar {
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
 
 function HeadBar({ setOpen }: IHeadBar) {
+  const { t } = useTranslation()
+
   const { account } = useWeb3React();
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const navigate = useNavigate();
@@ -81,6 +87,13 @@ function HeadBar({ setOpen }: IHeadBar) {
       })
   }
 
+  const [openLanguage, setOpenLanguage] = useState(false);
+
+  const handleClick = () => {
+    setOpenLanguage(!openLanguage);
+  };
+
+
   useEffect(() => {
     init()
   }, [window.location.href, account])
@@ -114,19 +127,15 @@ function HeadBar({ setOpen }: IHeadBar) {
     if (isHaveInviter || isTopInviter) {
       navigate(url)
     } else {
-      // setLoading(true)
-      // setLoadingState("error")
-      // setLoadingText("请填写推荐人地址")
-      // setTimeout(() => {
-      //   setLoadingState("")
-      //   setLoading(false)
-      // }, 2000);
       if (setOpen) setOpen(true)
       return
     }
   }
 
-
+  const changeLanguage = (changeLanguageStr: string) => {
+    setMenuOpen(false)
+    i18n.changeLanguage(changeLanguageStr)
+  }
 
   return (
     <div className=' border-b border-gray-300 z-50 backdrop-blur-xl fixed top-0 left-0 w-full h-16 px-4'>
@@ -178,7 +187,7 @@ function HeadBar({ setOpen }: IHeadBar) {
                     src={homeIcon}
                     alt=''
                   />
-                  <ListItemText className=' ml-2 ' primary="首页" />
+                  <ListItemText className=' ml-2 ' primary={`${t("home")}`} />
                 </ListItemButton>
 
                 <ListItemButton onClick={() => {
@@ -190,10 +199,9 @@ function HeadBar({ setOpen }: IHeadBar) {
                     src={planIcon}
                     alt=''
                   />
-                  <ListItemText className=' ml-2 ' primary="宝贝计划" />
+                  <ListItemText className=' ml-2 ' primary={`${t("BabyPlan")}`} />
                 </ListItemButton>
                 <ListItemButton onClick={() => {
-
                   navLink("/community")
                 }}>
                   <img
@@ -202,7 +210,7 @@ function HeadBar({ setOpen }: IHeadBar) {
                     src={communityIcon}
                     alt=''
                   />
-                  <ListItemText className=' ml-2 ' primary="我的社区" />
+                  <ListItemText className=' ml-2 ' primary={`${t("myCommunity")}`} />
                 </ListItemButton>
                 <ListItemButton onClick={() => {
                   navLink("/wealth")
@@ -213,9 +221,46 @@ function HeadBar({ setOpen }: IHeadBar) {
                     src={wealthIcon}
                     alt=''
                   />
-                  <ListItemText className=' ml-2 ' primary="重生财富 " />
+                  <ListItemText className=' ml-2 ' primary={`${t("rebornWealth")}`} />
+                </ListItemButton>
+                <ListItemButton onClick={handleClick}>
+                  <img
+                    width={20}
+                    height={20}
+                    src={languageIcon}
+                    alt=''
+                  />
+                  <ListItemText className=' ml-2 ' primary={`${t("Multilingualswitching")}`} />
+                  {openLanguage ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
 
+                <Collapse in={openLanguage} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => {
+                      changeLanguage("zh")
+                    }}>
+                      <img
+                        width={20}
+                        height={20}
+                        src={enznIcon}
+                        alt=''
+                      />
+                      <ListItemText className=' ml-2 ' primary={`${t("Chinese")}`} />
+                    </ListItemButton>
+
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => {
+                      changeLanguage("en")
+                    }}>
+                      <img
+                        width={20}
+                        height={20}
+                        src={enusIcon}
+                        alt=''
+                      />
+                      <ListItemText className=' ml-2 ' primary={`${t("English")}`} />
+                    </ListItemButton>
+                  </List>
+                </Collapse>
               </List>
             </Drawer>
             <span className=' leading-8 font-bold mainTextColor text-xl'>Baby Plan</span>
