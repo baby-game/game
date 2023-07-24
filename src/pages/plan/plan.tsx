@@ -136,7 +136,7 @@ function Plan() {
       setLoadingText(`${t("TransactionPacking")}`)
       try {
         let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(5).multipliedBy(55).dividedBy(10000).toString(), decimals), [usdtAddr, tokenkAddr])
-        console.log("sendJoin info", info, info.toString(),info[1].toString())
+        console.log("sendJoin info", info, info.toString(), info[1].toString())
         const gas: any = await babyContract?.estimateGas.join(toTokenValue(sendAmount, decimals), info[1].toString(), baseDays, flag, { from: account })
         console.log("sendJoin gas", gas)
         const response = await babyContract?.join(toTokenValue(sendAmount, decimals), info[1].toString(), baseDays, flag, {
@@ -205,7 +205,7 @@ function Plan() {
       }, 2000);
     }
   }
-  
+
 
   //takeBack
   const sendTakeBack = async () => {
@@ -366,7 +366,19 @@ function Plan() {
               value={joinWallet}
               onChange={(e) => {
                 console.log(e.target.value)
-                setJoinWallet(e.target.value)
+                // accountBalance
+                if (e.target.value == "accountBalance" && new BigNumber(fromTokenValue(accountBalance, 18)).isLessThan(sendAmount)) {
+                  setLoading(true)
+                  setLoadingState("error")
+                  setLoadingText(`${t("InsufficientAccountBalance")}`)
+                  setTimeout(() => {
+                    setLoadingState("")
+                    setLoading(false)
+                  }, 2000);
+                  return
+                } else {
+                  setJoinWallet(e.target.value)
+                }
               }}
             >
               <FormControlLabel value="balance" sx={{
