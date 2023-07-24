@@ -89,7 +89,6 @@ function Wealth() {
     const ItemEarnings = (item: any) => {
         const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
         let returnAmount = "0"
-        console.log("timeNow", timeNow)
         if (new BigNumber(timeNow).isLessThan(item.startDayIndex.toString())) {
             returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(timeNow).minus(item.startDayIndex.toString())).dividedBy(300).toString(), 18, 3)
         } else {
@@ -129,7 +128,7 @@ function Wealth() {
                                         <p className='font-bold text-xl  break-words '>
                                             {
                                                 ItemEarnings(item)
-                                            }000
+                                            }
                                             <span className=' text-sm ml-3'>USDT</span>
                                         </p>
                                     </div>

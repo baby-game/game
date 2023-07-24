@@ -250,7 +250,7 @@ function Plan() {
     if (new BigNumber(accountBalance).isZero()) {
       setLoading(true)
       setLoadingState("error")
-      setLoadingText("账号余额不足")
+      setLoadingText("账户余额不足")
       setTimeout(() => {
         setLoadingState("")
         setLoading(false)
@@ -260,10 +260,6 @@ function Plan() {
     setLoading(true)
     setLoadingState("loading")
     setLoadingText("交易打包中")
-
-    // 1 <= 2  正常执行
-
-    // 1 > 2  lasttime >= 1  reimburse
 
     if (new BigNumber(status1).isLessThanOrEqualTo(status2)) {
       try {
@@ -308,7 +304,6 @@ function Plan() {
           }
         } catch (err: any) {
           sendLoadingErr()
-
         }
       }
 
@@ -324,7 +319,6 @@ function Plan() {
           });
 
           let provider = new ethers.providers.Web3Provider(library.provider);
-
           let receipt = await provider.waitForTransaction(response.hash);
           if (receipt !== null) {
             if (receipt.status && receipt.status == 1) {
@@ -361,7 +355,15 @@ function Plan() {
     }, 2000);
   }
 
-
+  const sendLoadingAmount = () => {
+    setLoading(true)
+    setLoadingState("error")
+    setLoadingText("请填写数量")
+    setTimeout(() => {
+      setLoadingState("")
+      setLoading(false)
+    }, 2000);
+  }
 
 
   return (<>
@@ -542,13 +544,7 @@ function Plan() {
                 rateList[0] && new BigNumber(rateList[0].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                      setLoading(true)
-                      setLoadingState("error")
-                      setLoadingText("请填写数量")
-                      setTimeout(() => {
-                        setLoadingState("")
-                        setLoading(false)
-                      }, 2000);
+                      sendLoadingAmount()
                       return
                     } else {
                       setBaseDays(18)
@@ -581,13 +577,7 @@ function Plan() {
                 rateList[1] && new BigNumber(rateList[1].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                      setLoading(true)
-                      setLoadingState("error")
-                      setLoadingText("请填写数量")
-                      setTimeout(() => {
-                        setLoadingState("")
-                        setLoading(false)
-                      }, 2000);
+                      sendLoadingAmount()
                       return
                     } else {
                       setBaseDays(48)
@@ -620,13 +610,7 @@ function Plan() {
                 rateList[2] && new BigNumber(rateList[2].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                      setLoading(true)
-                      setLoadingState("error")
-                      setLoadingText("请填写数量")
-                      setTimeout(() => {
-                        setLoadingState("")
-                        setLoading(false)
-                      }, 2000);
+                      sendLoadingAmount()
                       return
                     } else {
                       setBaseDays(98)
@@ -659,13 +643,7 @@ function Plan() {
                 rateList[3] && new BigNumber(rateList[3].toString()).isGreaterThan(0) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
-                      setLoading(true)
-                      setLoadingState("error")
-                      setLoadingText("请填写数量")
-                      setTimeout(() => {
-                        setLoadingState("")
-                        setLoading(false)
-                      }, 2000);
+                      sendLoadingAmount()
                       return
                     } else {
                       setBaseDays(188)
@@ -701,7 +679,6 @@ function Plan() {
                 }
               </>
             }
-
           </p>
         </div>
 

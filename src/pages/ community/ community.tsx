@@ -25,21 +25,7 @@ function Community() {
 
   const [scale, setScale] = useState<string>("0")
   const [scalePop, setScalePop] = useState<boolean>(false)
-  //   struct User {
-  //     address inviter; //推荐人
-  //     uint value; //有效
-  //     uint scale; //等级
-  //     uint lastSettleTime;
-  //     bool reJoin; //是否自动入市, 也就是入金到期后自动续期
-
-  //     uint inviteAwardValue; //直推奖
-  //     uint scaleAwardValue;  //社区奖
-
-  //     uint inviteValue; //伞下总业绩
-  //     address maxZone;  //大区
-  // uint inviteCount;  //推荐人数
-  //       uint inviteTotalCount; //社区人数
-  // }
+  
   const [inviteAwardValue, setInviteAwardValue] = useState<string>("0")
   const [scaleAwardValue, setScaleAwardValue] = useState<string>("0")
   const [contributionAwardValue, setContributionAwardValue] = useState<string>("0")
@@ -47,8 +33,6 @@ function Community() {
   const [value, setValue] = useState<string>("0")
   const [inviteCount, setInviteCount] = useState<string>("0")
   const [inviteTotalCount, setInviteTotalCount] = useState<string>("0")
-
-
 
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<string>("loading")
