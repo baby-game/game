@@ -224,54 +224,8 @@ function Plan() {
     setLoadingState("loading")
     setLoadingText(`${t("TransactionPacking")}`)
 
-    if (new BigNumber(status1).isLessThanOrEqualTo(status2)) {
-      try {
-        const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
-        console.log("sendJoin gas", gas)
-        const response = await babyContract?.setFusingTime({
-          from: account,
-          gasLimit: gas.mul(105).div(100)
-        });
-
-        let provider = new ethers.providers.Web3Provider(library.provider);
-
-        let receipt = await provider.waitForTransaction(response.hash);
-        if (receipt !== null) {
-          if (receipt.status && receipt.status == 1) {
-            init()
-            sendLoadingSuccess()
-          } else {
-            sendLoadingErr()
-          }
-        }
-
-      } catch (error) {
-        try {
-          const gas: any = await babyContract?.estimateGas.takeBack(account, { from: account })
-          console.log("sendJoin gas", gas)
-          const response = await babyContract?.takeBack(account, {
-            from: account,
-            gasLimit: gas.mul(105).div(100)
-          });
-
-          let provider = new ethers.providers.Web3Provider(library.provider);
-
-          let receipt = await provider.waitForTransaction(response.hash);
-          if (receipt !== null) {
-            if (receipt.status && receipt.status == 1) {
-              init()
-              sendLoadingSuccess()
-            } else {
-              sendLoadingErr()
-            }
-          }
-        } catch (err: any) {
-          sendLoadingErr()
-        }
-      }
-
-    } else {
-      if (new BigNumber(lastTime).isLessThan(status1)) {
+    if (new BigNumber(lastTime).isLessThan(status1)) {
+      if (!new BigNumber(value).isZero()) {
         try {
           console.log(1)
           const gas: any = await babyContract?.estimateGas.reimburse({ from: account })
@@ -296,8 +250,132 @@ function Plan() {
         } catch (error) {
           sendLoadingErr()
         }
+      } else {
+        return
+      }
+    } else {
+      if (!new BigNumber(value).isZero()) {
+        try {
+          const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
+          console.log("sendJoin gas", gas)
+          const response = await babyContract?.setFusingTime({
+            from: account,
+            gasLimit: gas.mul(105).div(100)
+          });
+
+          let provider = new ethers.providers.Web3Provider(library.provider);
+
+          let receipt = await provider.waitForTransaction(response.hash);
+          if (receipt !== null) {
+            if (receipt.status && receipt.status == 1) {
+              init()
+              sendLoadingSuccess()
+            } else {
+              sendLoadingErr()
+            }
+          }
+
+        } catch (error) {
+          try {
+            const gas: any = await babyContract?.estimateGas.takeBack(account, { from: account })
+            console.log("sendJoin gas", gas)
+            const response = await babyContract?.takeBack(account, {
+              from: account,
+              gasLimit: gas.mul(105).div(100)
+            });
+
+            let provider = new ethers.providers.Web3Provider(library.provider);
+
+            let receipt = await provider.waitForTransaction(response.hash);
+            if (receipt !== null) {
+              if (receipt.status && receipt.status == 1) {
+                init()
+                sendLoadingSuccess()
+              } else {
+                sendLoadingErr()
+              }
+            }
+          } catch (err: any) {
+            sendLoadingErr()
+          }
+        }
+      } else {
+        return
       }
     }
+    // if (new BigNumber(status1).isLessThanOrEqualTo(status2)) {
+    //   try {
+    //     const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
+    //     console.log("sendJoin gas", gas)
+    //     const response = await babyContract?.setFusingTime({
+    //       from: account,
+    //       gasLimit: gas.mul(105).div(100)
+    //     });
+
+    //     let provider = new ethers.providers.Web3Provider(library.provider);
+
+    //     let receipt = await provider.waitForTransaction(response.hash);
+    //     if (receipt !== null) {
+    //       if (receipt.status && receipt.status == 1) {
+    //         init()
+    //         sendLoadingSuccess()
+    //       } else {
+    //         sendLoadingErr()
+    //       }
+    //     }
+
+    //   } catch (error) {
+    //     try {
+    //       const gas: any = await babyContract?.estimateGas.takeBack(account, { from: account })
+    //       console.log("sendJoin gas", gas)
+    //       const response = await babyContract?.takeBack(account, {
+    //         from: account,
+    //         gasLimit: gas.mul(105).div(100)
+    //       });
+
+    //       let provider = new ethers.providers.Web3Provider(library.provider);
+
+    //       let receipt = await provider.waitForTransaction(response.hash);
+    //       if (receipt !== null) {
+    //         if (receipt.status && receipt.status == 1) {
+    //           init()
+    //           sendLoadingSuccess()
+    //         } else {
+    //           sendLoadingErr()
+    //         }
+    //       }
+    //     } catch (err: any) {
+    //       sendLoadingErr()
+    //     }
+    //   }
+    // } else {
+    //   if (new BigNumber(lastTime).isLessThan(status1)) {
+    //     try {
+    //       console.log(1)
+    //       const gas: any = await babyContract?.estimateGas.reimburse({ from: account })
+    //       console.log("sendJoin gas", gas)
+    //       const response = await babyContract?.reimburse({
+    //         from: account,
+    //         gasLimit: gas.mul(105).div(100)
+    //       });
+
+    //       let provider = new ethers.providers.Web3Provider(library.provider);
+    //       let receipt = await provider.waitForTransaction(response.hash);
+    //       if (receipt !== null) {
+    //         if (receipt.status && receipt.status == 1) {
+    //           init()
+    //           sendLoadingSuccess()
+    //         } else {
+    //           sendLoadingErr()
+    //         }
+    //       } else {
+    //         console.log(2)
+    //       }
+    //     } catch (error) {
+    //       sendLoadingErr()
+    //     }
+    //   }
+    // }
   }
 
   const sendLoadingErr = () => {
@@ -637,8 +715,28 @@ function Plan() {
 
           <p className='mainTextColor font-bold w-1/2 '> {t("depositRecord")}</p>
           <p className=' text-center w-1/2' >
-
             {
+              new BigNumber(lastTime).isLessThan(status1) ? <>
+                {
+                  new BigNumber(value).isZero() ? <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
+                  >{t("applyForCompensation")} </span> : <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                    onClick={() => {
+                      sendTakeBack()
+                    }}
+                  > {t("applyForCompensation")}</span>
+                }
+              </> : <>
+                {
+                  new BigNumber(value).isZero() ? <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
+                  >{t("withdraw")} </span> : <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                    onClick={() => {
+                      sendTakeBack()
+                    }}
+                  >{t("withdraw")} </span>
+                }
+              </>
+            }
+            {/* {
               new BigNumber(status1).isLessThanOrEqualTo(status2) ? <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
                 onClick={() => {
                   sendTakeBack()
@@ -653,7 +751,7 @@ function Plan() {
                   >{t("withdraw")} </span>
                 }
               </>
-            }
+            } */}
           </p>
         </div>
 
