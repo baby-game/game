@@ -8,7 +8,7 @@ import TipPop from "../../components/pop/TipPop";
 import { fromTokenValue } from "../../utils";
 import copy from 'copy-to-clipboard';
 import { formatAccount } from "../../utils/formatting";
-import { copyIcon } from "../../image";
+import { copyIcon, labor5Icon, labor6Icon, labor7Icon, level0Icon, level1Icon, level2Icon, level3Icon, level4Icon, level5Icon, level6Icon, level7Icon } from "../../image";
 import HeadBar from "../../components/headbar";
 import { useTranslation } from "react-i18next";
 
@@ -57,6 +57,41 @@ function Community() {
 
   const init = () => {
     getUser()
+  }
+
+  const levelHtml=()=>{
+
+    let Icon 
+    if(isLabor){
+      if(Number(scale)==5){
+        Icon=labor5Icon
+      }else if(Number(scale)==6){
+        Icon=labor6Icon
+      }else if(Number(scale)==7){
+        Icon=labor7Icon
+      }
+
+    }else{
+      if(Number(scale)==0){
+        Icon=level0Icon
+      }else if(Number(scale)==1){
+        Icon=level1Icon
+      }else if(Number(scale)==2){
+        Icon=level2Icon
+      }else if(Number(scale)==3){
+        Icon=level3Icon
+      }else if(Number(scale)==4){
+        Icon=level4Icon
+      }else if(Number(scale)==5){
+        Icon=level5Icon
+      }else if(Number(scale)==6){
+        Icon=level6Icon
+      }else if(Number(scale)==7){
+        Icon=level7Icon 
+      }
+    }
+
+    return  <img className=" w-10 ml-2" src={Icon} alt="" />
   }
 
   return (<>
@@ -117,11 +152,14 @@ function Community() {
       <div className='bg-white rounded-2xl mx-3 mb-5 px-3 py-5'>
 
         <div className=" flex">
-          <div className=" flex-1">
-            <p className=' leading-8  font-bold mainTextColor text-xl'> {t("myLevel")}</p>
-          </div>
-          <div className=" flex-1">
-            <p className=" leading-8 text-center">
+          {/* <div className=" flex-1"> */}
+            <p className=' leading-10  font-bold mainTextColor text-xl'> {t("myLevel")}</p>
+            {levelHtml()}
+            {/* <img className=" w-10 ml-2" src={level0Icon} alt="" /> */}
+          {/* </div> */}
+          {/* <div className=" flex-1">
+            <p className=" leading-10">
+             
               <span
                 className="font-bold  rounded-full border-solid border-4 px-8 py-1 cursor-pointer"
                 style={{
@@ -134,9 +172,9 @@ function Community() {
                 S{scale}
               </span>
             </p>
-          </div>
+          </div> */}
         </div>
-        <div className="pt-4">
+        <div className="pt-2">
           <div >
             <p className=" text-gray-400 text-sm">
               {t("PromoteUsers")}:
