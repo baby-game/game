@@ -105,7 +105,7 @@ function HeadBar({ setOpen }: IHeadBar) {
     setIsTopInviter(isTopInviterData)
     let data = await babyContract?.getUser(account)
     let isHaveInviterData
-    if (data.inviter == AddressZero) {
+    if (data[0].inviter == AddressZero) {
       isHaveInviterData = false
       setIsHaveInviter(false)
     } else {

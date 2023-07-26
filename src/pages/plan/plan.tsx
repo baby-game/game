@@ -80,8 +80,8 @@ function Plan() {
   const getUser = async () => {
     let data = await babyContract?.getUser(account)
     console.log("getUser", data)
-    setLastTime(data.lastSettleTime.toString())
-    setValue(data.value.toString())
+    setLastTime(data[0].lastSettleTime.toString())
+    setValue(data[0].value.toString())
     // setReJoin(data.reJoin)
   }
 

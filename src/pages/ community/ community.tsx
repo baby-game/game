@@ -36,18 +36,20 @@ function Community() {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<string>("loading")
   const [loadingText, setLoadingText] = useState<string>("")
+  const [isLabor, setIsLabor] = useState<boolean>(false)
 
   const getUser = async () => {
     let data = await babyContract?.getUser(account)
     console.log("getUser", data)
-    setScale(data.scale.toString())
-    setInviteAwardValue(data.inviteAwardValue.toString())
-    setScaleAwardValue(data.scaleAwardValue.toString())
-    setContributionAwardValue(data.contributionAwardValue.toString())
-    setInviteValue(data.inviteValue.toString())
-    setValue(data.value.toString())
-    setInviteCount(data.inviteCount.toString())
-    setInviteTotalCount(data.inviteTotalCount.toString())
+    setScale(data[0].scale.toString())
+    setInviteAwardValue(data[0].inviteAwardValue.toString())
+    setScaleAwardValue(data[0].scaleAwardValue.toString())
+    setContributionAwardValue(data[0].contributionAwardValue.toString())
+    setInviteValue(data[0].inviteValue.toString())
+    setValue(data[0].value.toString())
+    setInviteCount(data[0].inviteCount.toString())
+    setInviteTotalCount(data[0].inviteTotalCount.toString())
+    setIsLabor(data[1])
   }
   useEffect(() => {
     init()
@@ -121,10 +123,16 @@ function Community() {
           <div className=" flex-1">
             <p className=" leading-8 text-center">
               <span
-                className=" borderMain rounded-full border-solid border-4 px-8 py-1 cursor-pointer"
+                className="font-bold  rounded-full border-solid border-4 px-8 py-1 cursor-pointer"
+                style={{
+                  color: isLabor ? "#ffa500" : "",
+                  borderColor:isLabor?"#ffa500":"rgb(60, 125, 104)"
+                }}
                 onClick={() => {
                   setScalePop(true)
-                }}>S{scale}</span>
+                }}>
+                S{scale}
+              </span>
             </p>
           </div>
         </div>

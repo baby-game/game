@@ -57,7 +57,7 @@ export default function Home({ }) {
   const getUser = async () => {
     let data = await babyContract?.getUser(account)
     console.log("getUser", data)
-    if (data.inviter == AddressZero) {
+    if (data[0].inviter == AddressZero) {
       setIsHaveInviter(false)
     } else {
       setIsHaveInviter(true)
