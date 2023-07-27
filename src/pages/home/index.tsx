@@ -143,6 +143,7 @@ export default function Home({ }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
+        
         <DialogContent>
           <div>
             <p className=" font-bold text-xl mainTextColor mb-2  ">{t("inviteLink")}</p>
