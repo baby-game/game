@@ -14,6 +14,7 @@
   "ClickOrEnterTheQuantity":"点击或输入数量",
   "dayContractMarketMaking":"天合约做市",
   "PleaseFillInTheQuantity":"请填写数量",
+  "PleaseFillInTheQuantityMinMax":"请输入100-1000的数量",
   "depositRecord":"入金记录",
   "withdraw":"提现",
   "applyForCompensation":"申请补偿",

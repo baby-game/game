@@ -114,6 +114,7 @@ function Plan() {
   }
 
   const sendJoin = async () => {
+
     let usdtErc20 = new Contract(usdtAddr, ERC20ABI, getProviderOrSigner(library, account || "") as any);
     const allowance: any = await usdtErc20?.allowance(account, BabyGameAddr);
     const decimals: any = await usdtErc20?.decimals()
@@ -405,6 +406,17 @@ function Plan() {
     }, 2000);
   }
 
+  const sendLoadingAmountMinMax = () => {
+    setLoading(true)
+    setLoadingState("error")
+    setLoadingText(`${t("PleaseFillInTheQuantityMinMax")}`)
+    setTimeout(() => {
+      setLoadingState("")
+      setLoading(false)
+    }, 2000);
+  }
+
+
 
   return (<>
     <HeadBar />
@@ -598,6 +610,9 @@ function Plan() {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
                       return
+                    } else if (new BigNumber(sendAmount).isLessThan(100) || new BigNumber(sendAmount).isGreaterThan(1000)) {
+                      sendLoadingAmountMinMax()
+                      return
                     } else {
                       setBaseDays(18)
                       setJoinPop(true)
@@ -630,6 +645,9 @@ function Plan() {
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
+                      return
+                    } else if (new BigNumber(sendAmount).isLessThan(100) || new BigNumber(sendAmount).isGreaterThan(1000)) {
+                      sendLoadingAmountMinMax()
                       return
                     } else {
                       setBaseDays(48)
@@ -664,6 +682,9 @@ function Plan() {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
                       return
+                    } else if (new BigNumber(sendAmount).isLessThan(100) || new BigNumber(sendAmount).isGreaterThan(1000)) {
+                      sendLoadingAmountMinMax()
+                      return
                     } else {
                       setBaseDays(98)
                       setJoinPop(true)
@@ -696,6 +717,9 @@ function Plan() {
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
+                      return
+                    } else if (new BigNumber(sendAmount).isLessThan(100) || new BigNumber(sendAmount).isGreaterThan(1000)) {
+                      sendLoadingAmountMinMax()
                       return
                     } else {
                       setBaseDays(188)

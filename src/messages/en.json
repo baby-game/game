@@ -14,6 +14,7 @@
     "ClickOrEnterTheQuantity": "Click or enter the quantity",
     "dayContractMarketMaking": "day contract market making",
     "PleaseFillInTheQuantity": "Please fill in the quantity",
+    "PleaseFillInTheQuantityMinMax":"Please enter the quantity of 100-1000",
     "depositRecord": "deposit record",
     "withdraw": "withdraw",
     "applyForCompensation": "apply for compensation",
