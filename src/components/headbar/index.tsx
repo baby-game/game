@@ -10,22 +10,24 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useBabyGameContract } from '../../hooks/useContract';
+import { useBabyGameContract, useIpoContract } from '../../hooks/useContract';
 import { AddressZero } from '@ethersproject/constants'
 import TipPop from '../pop/TipPop';
 import { useTranslation } from 'react-i18next';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Collapse from '@mui/material/Collapse';
 import i18n from '../../i18n';
+import BigNumber from "bignumber.js";
 
 declare const window: Window & { ethereum: any, web3: any };
-
 
 interface IHeadBar {
   setOpen?: Function
 }
 
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
+const ipoAddr = process.env.REACT_APP_CONTRACT_IPO + ""
+
 
 function HeadBar({ setOpen }: IHeadBar) {
   const { t } = useTranslation()
@@ -36,12 +38,17 @@ function HeadBar({ setOpen }: IHeadBar) {
   const params = useParams()
 
   const babyContract = useBabyGameContract(BabyGameAddr)
+  const ipoContract = useIpoContract(ipoAddr)
+
   const [isTopInviter, setIsTopInviter] = useState<boolean>(false)
 
   const [isHaveInviter, setIsHaveInviter] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<string>("loading")
   const [loadingText, setLoadingText] = useState<string>("")
+
+  const [ipoAmount, setIpoAmount] = useState<string>("0")
+
 
   const connectWallet = () => {
     window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: process.env.REACT_APP_NET_CHAIN_ID }] })
@@ -97,6 +104,16 @@ function HeadBar({ setOpen }: IHeadBar) {
   useEffect(() => {
     init()
   }, [window.location.href, account])
+
+  useEffect(() => {
+    getLeaves()
+  }, [account])
+
+  const getLeaves = async () => {
+    let data = await ipoContract?.leaves()
+    console.log("getLeaves", data, data.toString())
+    setIpoAmount(new BigNumber(data.a.toString()).plus(data.b.toString()).plus(data.c.toString()).toString())
+  }
 
   const init = async () => {
     console.log("init1", window.location)
@@ -193,17 +210,20 @@ function HeadBar({ setOpen }: IHeadBar) {
                   />
                   <ListItemText className=' ml-2 ' primary={`${t("home")}`} />
                 </ListItemButton>
-                <ListItemButton onClick={() => {
-                  navLink("/ipo")
-                }}>
-                  <img
-                    width={20}
-                    height={20}
-                    src={ipoIcon}
-                    alt=''
-                  />
-                  <ListItemText className=' ml-2 ' primary={`${t("ipo")}`} />
-                </ListItemButton>
+                
+                {
+                  new BigNumber(ipoAmount).isZero() ? <></> : <ListItemButton onClick={() => {
+                    navLink("/ipo")
+                  }}>
+                    <img
+                      width={20}
+                      height={20}
+                      src={ipoIcon}
+                      alt=''
+                    />
+                    <ListItemText className=' ml-2 ' primary={`${t("ipo")}`} />
+                  </ListItemButton>
+                }
 
                 <ListItemButton onClick={() => {
                   navLink("/plan")

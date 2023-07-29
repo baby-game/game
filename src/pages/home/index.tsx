@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import logo from '../../image/logo.png'
 import { useEffect, useState } from "react";
-import { isAddress, useBabyGameContract } from "../../hooks/useContract";
+import { isAddress, useBabyGameContract, useIpoContract } from "../../hooks/useContract";
 import { useWeb3React } from "@web3-react/core";
 import { AddressZero } from '@ethersproject/constants'
 import Dialog from "@mui/material/Dialog";
@@ -10,12 +10,17 @@ import TextField from "@mui/material/TextField";
 import TipPop from "../../components/pop/TipPop";
 import HeadBar from "../../components/headbar";
 import { useTranslation } from "react-i18next";
+import BigNumber from "bignumber.js";
+
 const ethers = require('ethers');
 const BabyGameAddr = process.env.REACT_APP_CONTRACT_BABYGAME + ""
+const ipoAddr = process.env.REACT_APP_CONTRACT_IPO + ""
 
 export default function Home({ }) {
   const navigate = useNavigate();
   const babyContract = useBabyGameContract(BabyGameAddr)
+  const ipoContract = useIpoContract(ipoAddr)
+
   const { account, library } = useWeb3React()
   const params = useParams()
   const { t } = useTranslation()
@@ -29,6 +34,7 @@ export default function Home({ }) {
   const [shareAddr, setShareAddr] = useState<string>("")
   const [sharePop, setSharePop] = useState<boolean>(false)
 
+  const [ipoAmount, setIpoAmount] = useState<string>("0")
 
   useEffect(() => {
     init()
@@ -45,6 +51,13 @@ export default function Home({ }) {
 
   const init = () => {
     getUser()
+    getLeaves()
+  }
+
+  const getLeaves = async () => {
+    let data = await ipoContract?.leaves()
+    console.log("getLeaves", data, data.toString())
+    setIpoAmount(new BigNumber(data.a.toString()).plus(data.b.toString()).plus(data.c.toString()).toString())
   }
 
   const getIsTopInviter = async () => {
@@ -194,16 +207,17 @@ export default function Home({ }) {
         </p>
       </div>
 
-      <div className=" text-center mt-5">
-        <p>
-          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-            onClick={() => {
-              navigate("/ipo")
-            }}
-          > {t("ipo")}</span>
-        </p>
-      </div>
-
+      {
+        new BigNumber(ipoAmount).isZero() ? <></> : <div className=" text-center mt-5">
+          <p>
+            <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+              onClick={() => {
+                navigate("/ipo")
+              }}
+            > {t("ipo")}</span>
+          </p>
+        </div>
+      }
 
       <div className=" text-center mt-5">
         <p>
