@@ -143,7 +143,7 @@ export default function Home({ }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        
+
         <DialogContent>
           <div>
             <p className=" font-bold text-xl mainTextColor mb-2  ">{t("inviteLink")}</p>
@@ -194,6 +194,16 @@ export default function Home({ }) {
         </p>
       </div>
 
+      <div className=" text-center mt-5">
+        <p>
+          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+            onClick={() => {
+              navigate("/ipo")
+            }}
+          > {t("ipo")}</span>
+        </p>
+      </div>
+
 
       <div className=" text-center mt-5">
         <p>
@@ -239,6 +249,8 @@ export default function Home({ }) {
           > {t("rebornWealth")}</span>
         </p>
       </div>
+
+
     </div>
   </>
 

@@ -18,5 +18,6 @@ import level7Icon from './level7.png'
 import labor5Icon from './labor5.png'
 import labor6Icon from './labor6.png'
 import labor7Icon from './labor7.png'
+import ipoIcon from './ipo.png'
 
-export {menuIcon,copyIcon,homeIcon,wealthIcon,planIcon,communityIcon,languageIcon,enusIcon,enznIcon,level0Icon,level1Icon,level2Icon,level3Icon,level4Icon,level5Icon,level6Icon,level7Icon,labor5Icon,labor6Icon,labor7Icon}
+export {menuIcon,copyIcon,homeIcon,wealthIcon,planIcon,communityIcon,languageIcon,enusIcon,enznIcon,level0Icon,level1Icon,level2Icon,level3Icon,level4Icon,level5Icon,level6Icon,level7Icon,labor5Icon,labor6Icon,labor7Icon,ipoIcon}

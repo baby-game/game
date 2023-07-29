@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import { formatAccount } from '../../utils/formatting';
 import walletIcon from '../../image/wallet.png'
 import logo from '../../image/logo.png'
-import { communityIcon, enusIcon, enznIcon, homeIcon, languageIcon, menuIcon, planIcon, wealthIcon } from '../../image';
+import { communityIcon, enusIcon, enznIcon, homeIcon, ipoIcon, languageIcon, menuIcon, planIcon, wealthIcon } from '../../image';
 import Drawer from '@mui/material/Drawer';
 import { useEffect, useState } from 'react';
 import List from '@mui/material/List';
@@ -99,34 +99,38 @@ function HeadBar({ setOpen }: IHeadBar) {
   }, [window.location.href, account])
 
   const init = async () => {
-    console.log("init1")
-
-    let isTopInviterData = await babyContract?.isTopInviter(account)
-    setIsTopInviter(isTopInviterData)
-    let data = await babyContract?.getUser(account)
-    let isHaveInviterData
-    if (data[0].inviter == AddressZero) {
-      isHaveInviterData = false
-      setIsHaveInviter(false)
+    console.log("init1", window.location)
+    if (window.location.href.indexOf("ipo") != -1) {
+      return
     } else {
-      isHaveInviterData = true
-      setIsHaveInviter(true)
-    }
-
-    if (params.shareAddress) {
-    } else {
-      if (isTopInviterData || isHaveInviterData) {
+      let isTopInviterData = await babyContract?.isTopInviter(account)
+      setIsTopInviter(isTopInviterData)
+      let data = await babyContract?.getUser(account)
+      let isHaveInviterData
+      if (data[0].inviter == AddressZero) {
+        isHaveInviterData = false
+        setIsHaveInviter(false)
       } else {
-        navigate("/home")
+        isHaveInviterData = true
+        setIsHaveInviter(true)
+      }
+
+      if (params.shareAddress) {
+      } else {
+        if (isTopInviterData || isHaveInviterData) {
+        } else {
+          navigate("/home")
+        }
       }
     }
   }
 
   const navLink = (url: string) => {
     setMenuOpen(false)
-    if (isHaveInviter || isTopInviter) {
+    if (isHaveInviter || isTopInviter || url == "/ipo") {
       navigate(url)
     } else {
+      navigate("/home")
       if (setOpen) setOpen(true)
       return
     }
@@ -188,6 +192,17 @@ function HeadBar({ setOpen }: IHeadBar) {
                     alt=''
                   />
                   <ListItemText className=' ml-2 ' primary={`${t("home")}`} />
+                </ListItemButton>
+                <ListItemButton onClick={() => {
+                  navLink("/ipo")
+                }}>
+                  <img
+                    width={20}
+                    height={20}
+                    src={ipoIcon}
+                    alt=''
+                  />
+                  <ListItemText className=' ml-2 ' primary={`${t("ipo")}`} />
                 </ListItemButton>
 
                 <ListItemButton onClick={() => {
