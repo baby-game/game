@@ -31,14 +31,17 @@ export default function Home({ }) {
 
   const [isTopInviter, setIsTopInviter] = useState<boolean>(false)
   const [isHaveInviter, setIsHaveInviter] = useState<boolean>(false)
+
+  const [loadingHome, setLoadingHome] = useState<boolean>(false)
+
   const [shareAddr, setShareAddr] = useState<string>("")
   const [sharePop, setSharePop] = useState<boolean>(false)
 
   const [ipoAmount, setIpoAmount] = useState<string>("0")
 
   useEffect(() => {
+    setLoadingHome(false)
     init()
-    getIsTopInviter()
     if (params.shareAddress) {
       console.log(" referrerCode ===", params.shareAddress)
       if (isAddress(params.shareAddress) && params.shareAddress !== AddressZero) {
@@ -50,8 +53,30 @@ export default function Home({ }) {
   }, [account])
 
   const init = () => {
-    getUser()
+    // getUser()
+    // getIsTopInviter()
     getLeaves()
+    getUserState()
+  }
+
+
+  const getUserState = async () => {
+    try {
+      let data = await Promise.all([await babyContract?.getUser(account), await babyContract?.isTopInviter(account)])
+      console.log("getUserState", data)
+      setIsTopInviter(data[1])
+      if (data[0][0].inviter == AddressZero) {
+        setIsHaveInviter(false)
+      } else {
+        setIsHaveInviter(true)
+      }
+      setLoadingHome(true)
+    } catch (error) {
+      console.log("getUserState", error)
+      setIsHaveInviter(false)
+      setIsTopInviter(false)
+      setLoadingHome(true)
+    }
   }
 
   const getLeaves = async () => {
@@ -60,22 +85,22 @@ export default function Home({ }) {
     setIpoAmount(new BigNumber(data.a.toString()).plus(data.b.toString()).plus(data.c.toString()).toString())
   }
 
-  const getIsTopInviter = async () => {
-    let data = await babyContract?.isTopInviter(account)
-    console.log("getIsTopInviter", data)
-    setIsTopInviter(data)
-  }
+  // const getIsTopInviter = async () => {
+  //   let data = await babyContract?.isTopInviter(account)
+  //   console.log("getIsTopInviter", data)
+  //   setIsTopInviter(data)
+  // }
 
   // getUser
-  const getUser = async () => {
-    let data = await babyContract?.getUser(account)
-    console.log("getUser", data)
-    if (data[0].inviter == AddressZero) {
-      setIsHaveInviter(false)
-    } else {
-      setIsHaveInviter(true)
-    }
-  }
+  // const getUser = async () => {
+  //   let data = await babyContract?.getUser(account)
+  //   console.log("getUser", data)
+  //   if (data[0].inviter == AddressZero) {
+  //     setIsHaveInviter(false)
+  //   } else {
+  //     setIsHaveInviter(true)
+  //   }
+  // }
   // register
   const sendRegister = async () => {
     if (shareAddr == "" || !isAddress(shareAddr)) {
@@ -208,62 +233,66 @@ export default function Home({ }) {
       </div>
 
       {
-        new BigNumber(ipoAmount).isZero() ? <></> : <div className=" text-center mt-5">
-          <p>
-            <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-              onClick={() => {
-                navigate("/ipo")
-              }}
-            > {t("ipo")}</span>
-          </p>
-        </div>
+        loadingHome && <>
+          {
+            new BigNumber(ipoAmount).isZero() ? <></> : <div className=" text-center mt-5">
+              <p>
+                <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                  onClick={() => {
+                    navigate("/ipo")
+                  }}
+                > {t("ipo")}</span>
+              </p>
+            </div>
+          }
+
+          <div className=" text-center mt-5">
+            <p>
+              <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                onClick={() => {
+                  if (isHaveInviter || isTopInviter) {
+                    navigate("/plan")
+                  } else {
+                    setSharePop(true)
+                    return
+                  }
+                }}
+              > {t("BabyPlan")} </span>
+            </p>
+          </div>
+
+          <div className=" text-center mt-5">
+            <p>
+              <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                onClick={() => {
+                  if (isHaveInviter || isTopInviter) {
+                    navigate("/community")
+                  } else {
+                    setSharePop(true)
+                    return
+                  }
+                }}
+              > {t("myCommunity")}</span>
+            </p>
+          </div>
+
+          <div className=" text-center mt-5">
+            <p>
+              <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                onClick={() => {
+                  if (isHaveInviter || isTopInviter) {
+                    navigate("/wealth")
+                  } else {
+                    setSharePop(true)
+                    return
+                  }
+                }}
+              > {t("rebornWealth")}</span>
+            </p>
+          </div>
+
+        </>
       }
-
-      <div className=" text-center mt-5">
-        <p>
-          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-            onClick={() => {
-              if (isHaveInviter || isTopInviter) {
-                navigate("/plan")
-              } else {
-                setSharePop(true)
-                return
-              }
-            }}
-          > {t("BabyPlan")} </span>
-        </p>
-      </div>
-
-      <div className=" text-center mt-5">
-        <p>
-          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-            onClick={() => {
-              if (isHaveInviter || isTopInviter) {
-                navigate("/community")
-              } else {
-                setSharePop(true)
-                return
-              }
-            }}
-          > {t("myCommunity")}</span>
-        </p>
-      </div>
-
-      <div className=" text-center mt-5">
-        <p>
-          <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
-            onClick={() => {
-              if (isHaveInviter || isTopInviter) {
-                navigate("/wealth")
-              } else {
-                setSharePop(true)
-                return
-              }
-            }}
-          > {t("rebornWealth")}</span>
-        </p>
-      </div>
-
 
     </div>
   </>
