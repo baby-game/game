@@ -134,7 +134,7 @@ function Community() {
         <div className='mainTextColor font-bold text-2xl flex  mb-2'>
           {t("shareLink")}:
           <div className=" flex mt-2" onClick={() => {
-            copy(window.location.host + "/home/" + account + "");
+            copy("https://babygdao.github.io/game/#/home/" + account + "");
             setLoading(true)
             setLoadingState("success")
             setLoadingText(`${t("copySuccessfully")}`)
