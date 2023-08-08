@@ -300,7 +300,7 @@ function Ipo() {
             </div>
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
-                <h3 className='mainTextColor font-bold text-2xl mt-2'>申请S3 </h3>
+                <h3 className='mainTextColor font-bold text-2xl mt-2'>{t("Application")} S3 </h3>
                 <div className=' flex my-3'>
                     <div className=' flex-1 text-center'>
                         <p className='  text-gray-400 text-sm'>{t("Quota")} </p>
