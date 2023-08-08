@@ -234,7 +234,7 @@ export default function Home({ }) {
 
       {
         loadingHome && <>
-          {
+          {/* {
             new BigNumber(ipoAmount).isZero() ? <></> : <div className=" text-center mt-5">
               <p>
                 <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
@@ -244,7 +244,7 @@ export default function Home({ }) {
                 > {t("ipo")}</span>
               </p>
             </div>
-          }
+          } */}
 
           <div className=" text-center mt-5">
             <p>

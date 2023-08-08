@@ -28,6 +28,7 @@ function Ipo() {
     const [leave1, setLeave1] = useState<string>("0");
     const [leave2, setLeave2] = useState<string>("0");
     const [leave3, setLeave3] = useState<string>("0");
+    const [leave4, setLeave4] = useState<string>("0");
 
     // const [leaveType, setLeaveType] = useState<number>(0)
 
@@ -56,6 +57,7 @@ function Ipo() {
         setLeave1(data.a.toString())
         setLeave2(data.b.toString())
         setLeave3(data.c.toString())
+        setLeave4(data.d.toString())
     }
 
     const sendJoin = async (leaveType: number) => {
@@ -67,6 +69,8 @@ function Ipo() {
             sendAmount = 5000
         } else if (leaveType == 2) {
             sendAmount = 2000
+        } else if (leaveType == 4) {
+            sendAmount = 500
         }
 
         let usdtErc20 = new Contract(usdtAddr, ERC20ABI, getProviderOrSigner(library, account || "") as any);
@@ -79,27 +83,24 @@ function Ipo() {
         setLoadingState("loading")
         setLoadingText(`${t("TransactionPacking")}`)
 
-
         if (new BigNumber(allowance.toString()).isLessThan(toTokenValue(sendAmount, decimals))) {
             sendApprove(usdtErc20, ipoAddr, sendJoin, leaveType)
-        } else {
+        } else if (leaveType == 4) {
             setLoadingState("loading")
             setLoadingText(`${t("TransactionPacking")}`)
             try {
 
                 let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(55).dividedBy(200).toString(), decimals), [usdtAddr, tokenkAddr])
 
-                console.log("sendJoin info", info, info.toString(),info[1].toString())
+                console.log("sendJoin info", info, info.toString(), info[1].toString())
 
-                const gas: any = await ipoContract?.estimateGas.join(leaveType, info[1].toString(), { from: account })
+                const gas: any = await ipoContract?.estimateGas.joinNew(leaveType, info[1].toString(), { from: account })
                 console.log("sendJoin gas", gas)
-
-                const response = await ipoContract?.join(leaveType, info[1].toString(), {
+                const response = await ipoContract?.joinNew(leaveType, info[1].toString(), {
                     from: account,
                     gasLimit: gas.mul(105).div(100)
                 });
                 let provider = new ethers.providers.Web3Provider(library.provider);
-
                 let receipt = await provider.waitForTransaction(response.hash);
                 if (receipt !== null) {
                     if (receipt.status && receipt.status == 1) {
@@ -110,7 +111,35 @@ function Ipo() {
                     }
                 }
             } catch (err: any) {
+                console.log("sendJoin err", err)
+                sendLoadingErr()
+            }
+        } else {
+            setLoadingState("loading")
+            setLoadingText(`${t("TransactionPacking")}`)
+            try {
 
+                let info = await routerContract?.getAmountsOut(toTokenValue(new BigNumber(sendAmount).multipliedBy(55).dividedBy(200).toString(), decimals), [usdtAddr, tokenkAddr])
+
+                console.log("sendJoin info", info, info.toString(), info[1].toString())
+
+                const gas: any = await ipoContract?.estimateGas.join(leaveType, info[1].toString(), { from: account })
+                console.log("sendJoin gas", gas)
+                const response = await ipoContract?.join(leaveType, info[1].toString(), {
+                    from: account,
+                    gasLimit: gas.mul(105).div(100)
+                });
+                let provider = new ethers.providers.Web3Provider(library.provider);
+                let receipt = await provider.waitForTransaction(response.hash);
+                if (receipt !== null) {
+                    if (receipt.status && receipt.status == 1) {
+                        init()
+                        sendLoadingSuccess()
+                    } else {
+                        sendLoadingErr()
+                    }
+                }
+            } catch (err: any) {
                 console.log("sendJoin err", err)
                 sendLoadingErr()
             }
@@ -134,8 +163,6 @@ function Ipo() {
             setLoadingState("")
         }, 2000);
     }
-
-
 
     const sendApprove = async (approveContract: any, approveAddress: string, send: Function, leaveType?: number) => {
         setLoadingState("loading")
@@ -267,6 +294,32 @@ function Ipo() {
                                     sendJoin(2)
                                 }}
                             >2000 USDT </span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
+                <h3 className='mainTextColor font-bold text-2xl mt-2'>申请S3 </h3>
+                <div className=' flex my-3'>
+                    <div className=' flex-1 text-center'>
+                        <p className='  text-gray-400 text-sm'>{t("Quota")} </p>
+                        <p className='  font-bold text-3xl leading-loose'>{leave4}</p>
+                    </div>
+                    <div className=' flex-1 text-center'>
+                        <p className='text-gray-400 text-sm'>{t("theAmount")} </p>
+                        <p className='  font-bold text-3xl leading-loose'>500 <span className=' text-sm'>USDT</span></p>
+                    </div>
+                </div>
+
+                <div className=" text-center my-2 py-2">
+                    <p>
+                        {
+                            isJoined || new BigNumber(leave3).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>500 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                                onClick={() => {
+                                    sendJoin(4)
+                                }}
+                            >500 USDT </span>
                         }
                     </p>
                 </div>

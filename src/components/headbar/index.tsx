@@ -211,7 +211,7 @@ function HeadBar({ setOpen }: IHeadBar) {
                   <ListItemText className=' ml-2 ' primary={`${t("home")}`} />
                 </ListItemButton>
                 
-                {
+                {/* {
                   new BigNumber(ipoAmount).isZero() ? <></> : <ListItemButton onClick={() => {
                     navLink("/ipo")
                   }}>
@@ -223,7 +223,7 @@ function HeadBar({ setOpen }: IHeadBar) {
                     />
                     <ListItemText className=' ml-2 ' primary={`${t("ipo")}`} />
                   </ListItemButton>
-                }
+                } */}
 
                 <ListItemButton onClick={() => {
                   navLink("/plan")
