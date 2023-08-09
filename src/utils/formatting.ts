@@ -53,9 +53,9 @@ export const ItemReward = (item: any) => {
     const timeNow = new Date().getTime() / 1000
     let days
     if (new BigNumber(timeNow).isLessThan(item.dueTime.toString())) {
-        days = new BigNumber(new BigNumber(timeNow).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0)
+        days = new BigNumber(new BigNumber(timeNow).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0,1)
     } else {
-        days = new BigNumber(new BigNumber(item.dueTime.toString()).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0)
+        days = new BigNumber(new BigNumber(item.dueTime.toString()).minus(item.createTime.toString()).toString()).dividedBy(dayTime).toFixed(0,1)
     }
     return new BigNumber(item.value.toString()).multipliedBy(days).multipliedBy(item.rate.toString()).dividedBy(10000).toString()
 }
