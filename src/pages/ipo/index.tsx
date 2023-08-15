@@ -212,9 +212,9 @@ function Ipo() {
         <div className='main'>
             <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
             <div className=' pt-32  mx-3 pb-10'>
-                <h3 className="indent-8 font-bold text-xl mainTextColor">{t("ipo1")} </h3>
+                {/* <h3 className="indent-8 font-bold text-xl mainTextColor">{t("ipo1")} </h3> */}
             </div>
-
+            {/* 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
                 <h3 className='mainTextColor font-bold text-2xl mt-2'>{t("GlobalCreationAssociation")} </h3>
                 <div className=' flex my-3'>
@@ -297,7 +297,7 @@ function Ipo() {
                         }
                     </p>
                 </div>
-            </div>
+            </div> */}
 
             <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
                 <h3 className='mainTextColor font-bold text-2xl mt-2'>{t("Application")} S3 </h3>
@@ -315,7 +315,7 @@ function Ipo() {
                 <div className=" text-center my-2 py-2">
                     <p>
                         {
-                            isJoined || new BigNumber(leave3).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>500 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                            isJoined || new BigNumber(leave4).isZero() ? <span className=' border-solid border rounded-3xl py-2 px-16 text-gray-400 font-bold  border-gray-400 cursor-pointer'>500 USDT </span> : <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
                                 onClick={() => {
                                     sendJoin(4)
                                 }}
@@ -325,9 +325,9 @@ function Ipo() {
                 </div>
             </div>
 
-            <div className=' pt-5 mx-3 pb-10'>
+            {/* <div className=' pt-5 mx-3 pb-10'>
                 <p className=' indent-8 text-gray-400'>{t("ipo5")}</p>
-            </div>
+            </div> */}
         </div>
     </>
     )

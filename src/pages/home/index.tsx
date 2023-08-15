@@ -81,8 +81,8 @@ export default function Home({ }) {
 
   const getLeaves = async () => {
     let data = await ipoContract?.leaves()
-    console.log("getLeaves", data, data.toString())
-    setIpoAmount(new BigNumber(data.a.toString()).plus(data.b.toString()).plus(data.c.toString()).toString())
+    console.log("getLeaves", data, data.toString(), new BigNumber(data.a.toString()).plus(data.b.toString()).plus(data.c.toString()).plus(data.d.toString()).toString())
+    setIpoAmount(new BigNumber(data.a.toString()).plus(data.b.toString()).plus(data.c.toString()).plus(data.d.toString()).toString())
   }
 
   // const getIsTopInviter = async () => {
@@ -245,6 +245,18 @@ export default function Home({ }) {
               </p>
             </div>
           } */}
+
+          {
+            new BigNumber(ipoAmount).isZero() ? <></> : <div className=" text-center mt-5">
+              <p>
+                <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
+                  onClick={() => {
+                    navigate("/ipo")
+                  }}
+                >  {t("Application")} S3</span>
+              </p>
+            </div>
+          }
 
           <div className=" text-center mt-5">
             <p>
