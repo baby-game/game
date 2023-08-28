@@ -210,16 +210,7 @@ function Plan() {
   //takeBack
   const sendTakeBack = async () => {
 
-    if (new BigNumber(accountBalance).isZero()) {
-      setLoading(true)
-      setLoadingState("error")
-      setLoadingText(`${t("InsufficientAccountBalance")}`)
-      setTimeout(() => {
-        setLoadingState("")
-        setLoading(false)
-      }, 2000);
-      return
-    }
+   
     setLoading(true)
     setLoadingState("loading")
     setLoadingText(`${t("TransactionPacking")}`)
@@ -254,6 +245,18 @@ function Plan() {
         return
       }
     } else {
+      
+      if (new BigNumber(accountBalance).isZero()) {
+        setLoading(true)
+        setLoadingState("error")
+        setLoadingText(`${t("InsufficientAccountBalance")}`)
+        setTimeout(() => {
+          setLoadingState("")
+          setLoading(false)
+        }, 2000);
+        return
+      }
+
       if (!new BigNumber(value).isZero()) {
         try {
           const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
