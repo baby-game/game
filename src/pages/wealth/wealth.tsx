@@ -6,7 +6,6 @@ import HeadBar from '../../components/headbar'
 import TipPop from '../../components/pop/TipPop'
 import { fromTokenValue } from '../../utils'
 import BigNumber from "bignumber.js";
-import { Days } from '../../constants'
 import { useTranslation } from 'react-i18next'
 
 const ethers = require('ethers');
@@ -130,7 +129,6 @@ function Wealth() {
             <TipPop open={loading} setOpen={setLoading} loadingText={loadingText} loadingState={loadingState} />
 
             <div className=' pt-32  mx-3 pb-10'>
-
             </div>
 
             {
