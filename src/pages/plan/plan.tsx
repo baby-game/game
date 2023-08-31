@@ -608,7 +608,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList[0] && new BigNumber(rateList[0].toString()).isGreaterThan(0) && !new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[0] && new BigNumber(rateList[0].toString()).isGreaterThan(0) && new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
@@ -644,7 +644,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList[1] && new BigNumber(rateList[1].toString()).isGreaterThan(0) && !new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[1] && new BigNumber(rateList[1].toString()).isGreaterThan(0) && new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
@@ -680,7 +680,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList[2] && new BigNumber(rateList[2].toString()).isGreaterThan(0) && !new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[2] && new BigNumber(rateList[2].toString()).isGreaterThan(0) && new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
@@ -716,7 +716,7 @@ function Plan() {
               lineHeight: "50px"
             }}>
               {
-                rateList[3] && new BigNumber(rateList[3].toString()).isGreaterThan(0) && !new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
+                rateList[3] && new BigNumber(rateList[3].toString()).isGreaterThan(0) && new BigNumber(status1).isLessThan(status2) ? <span className=' border-solid border rounded-3xl py-2 px-4 mainTextColor font-bold borderMain cursor-pointer'
                   onClick={() => {
                     if (!new BigNumber(sendAmount).isGreaterThan(0)) {
                       sendLoadingAmount()
