@@ -664,7 +664,7 @@ function Plan() {
         </div>
       </div>
 
-      <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
+      {/* <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
         <div className=' flex'>
           <div className='w-1/2'>
             <div>
@@ -698,9 +698,9 @@ function Plan() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
+      {/* <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
         <div className=' flex'>
           <div className='w-1/2'>
             <div>
@@ -734,7 +734,7 @@ function Plan() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className='bg-white rounded-2xl  mx-3 mb-5 p-3'>
         <div className=' flex'>
