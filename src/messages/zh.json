@@ -25,7 +25,7 @@
   "Expect":"期",
   "RebirthWealthRewardsToBeWithdrawn":"待提取重生财富奖励",
   "RebirthFortuneRewardHasBeenWithdrawn":"已提取重生财富奖励",
-  "plan1":"每期熔断时，50%个人做市本金退回，另外50%按1.25倍重生财富奖励。以SOD实时价格，每日（8:00）金本位奖励SOD，按照300天周期平均固定。",
+  "plan1":"每期熔断时，个人做市本金按1.25倍重生财富奖励。以SOD实时价格，每日（8:00）金本位奖励SOD，按照300天周期平均固定。",
   "TheSumOfThePerformanceOfHeDistrict":"小区业绩之和",
   "shareLink":"分享链接",
   "copySuccessfully":"复制成功",
