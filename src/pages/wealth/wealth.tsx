@@ -85,23 +85,45 @@ function Wealth() {
         }, 2000);
     }
 
-
     const ItemEarnings = (item: any) => {
         const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
         let returnAmount = "0"
-        if (new BigNumber(timeNow).isLessThan(item.startDayIndex.toString())) {
-            returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(timeNow).minus(item.startDayIndex.toString())).dividedBy(300).toString(), 18, 3)
-        } else {
-            returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(item.endDayIndex.toString()).minus(item.startDayIndex.toString())).dividedBy(300).toString(), 18, 3)
+
+        if(new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())){
+            let amountDay=new BigNumber(timeNow).isLessThan(item.endDayIndex.toString()) ? timeNow:item.endDayIndex.toString();
+            returnAmount=fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(amountDay).minus(item.startDayIndex.toString()).toString()).dividedBy(300).toString(), 18, 3);
+
+        }else{
+            returnAmount="0"
+        }
+
+        return returnAmount;
+    }
+
+    const ItemUnEarnings = (item: any) => {
+        let returnAmount = "0"
+        if(new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())){
+            returnAmount=fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(300).plus(item.startDayIndex.toString()).minus(item.endDayIndex.toString())).dividedBy(300).toString(), 18, 3);
+        }else{
+            returnAmount=fromTokenValue(item.amount.toString(), 18, 3);
         }
 
         return returnAmount
     }
 
-    const ItemUnEarnings = (item: any) => {
-        return fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(300).plus(item.startDayIndex.toString()).minus(item.endDayIndex.toString())).dividedBy(300).toString(), 18, 3)
+    const ItemNotReleased=(item: any)=>{
+       
+        const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
+        let returnAmount = "0"
+        if(new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())){
+            let amountDay=new BigNumber(timeNow).isLessThan(item.endDayIndex.toString()) ? timeNow:item.endDayIndex.toString();
+            returnAmount=fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(item.endDayIndex.toString()).minus(amountDay).toString()).dividedBy(300).toString(), 18, 3);
+        }else{
+            returnAmount="0"
+        }
+        return returnAmount
+        
     }
-
     return (<>
         <HeadBar />
         <div className=" main">
@@ -129,7 +151,15 @@ function Wealth() {
                                             {
                                                 ItemEarnings(item)
                                             }
-                                            <span className=' text-sm ml-3'>USDT</span>
+                                            <span className=' mx-1'>
+                                            +
+                                            </span>
+                                            <span className='text-gray-400'>
+                                            {
+                                                ItemNotReleased(item)
+                                            }
+                                            </span>
+                                            <span className=' text-sm ml-2'>USDT</span>
                                         </p>
                                     </div>
                                     <div>
@@ -145,7 +175,7 @@ function Wealth() {
                                             {
                                                 ItemUnEarnings(item)
                                             }
-                                            <span className=' text-sm ml-3 '>USDT</span>
+                                            <span className=' text-sm ml-2 '>USDT</span>
                                         </p>
                                     </div>
                                 </div>
