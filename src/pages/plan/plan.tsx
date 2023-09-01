@@ -753,7 +753,7 @@ function Plan() {
                 }
               </> : <>
                 {
-                  new BigNumber(value).isZero() ? <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
+                  new BigNumber(accountBalance).isZero() ? <span className=' border-solid border rounded-2xl py-1 px-4 text-gray-400 font-bold  cursor-pointer'
                   >{t("withdraw")} </span> : <span className=' border-solid border rounded-2xl py-1 px-4 mainTextColor font-bold borderMain cursor-pointer'
                     onClick={() => {
                       sendTakeBack()
