@@ -72,7 +72,7 @@ function Plan() {
   // fusingStatus
   const getFusingStatus = async () => {
     let data = await babyContract?.fusingStatus()
-    console.log("getFusingStatus", data)
+    console.log("data fusingStatus",data[0].toString())
     setStatus1(data[0].toString())
     setStatus2(data[1].toString())
   }
@@ -82,6 +82,7 @@ function Plan() {
     console.log("getUser", data)
     setLastTime(data[0].lastSettleTime.toString())
     setValue(data[0].value.toString())
+    console.log("data",data[0].lastSettleTime.toString(),data[0].value.toString())
     // setReJoin(data.reJoin)
   }
 
@@ -106,7 +107,7 @@ function Plan() {
   const getExpiredItemsValue = async () => {
     try {
       let data = await babyContract?.expiredItemsValue(account)
-      console.log("getExpiredItemsValue", data)
+      console.log("data amount", data.amount.toString())
       setAccountBalance(data.amount.toString())
     } catch (error) {
       setAccountBalance("0")
@@ -206,7 +207,6 @@ function Plan() {
     }
   }
 
-
   //takeBack
   const sendTakeBack = async () => {
 
@@ -235,11 +235,15 @@ function Plan() {
             } else {
               sendLoadingErr()
             }
+          }else{
+            sendLoadingErr()
           } 
         } catch (error) {
+        console.log("sendJoin gas err", )
           sendLoadingErr()
         }
       } else {
+        console.log("sendJoin gas err", )
         sendLoadingErr()
         return
       }
@@ -275,6 +279,8 @@ function Plan() {
             } else {
               sendLoadingErr()
             }
+          }else{
+            sendLoadingErr()
           }
 
         } catch (error) {
@@ -296,12 +302,16 @@ function Plan() {
               } else {
                 sendLoadingErr()
               }
+            }else{
+              sendLoadingErr()
             }
           } catch (err: any) {
             sendLoadingErr()
           }
         }
       } else {
+        console.log("err 1")
+        sendLoadingErr()
         return
       }
     }
