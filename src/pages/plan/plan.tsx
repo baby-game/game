@@ -235,13 +235,12 @@ function Plan() {
             } else {
               sendLoadingErr()
             }
-          } else {
-            console.log(2)
-          }
+          } 
         } catch (error) {
           sendLoadingErr()
         }
       } else {
+        sendLoadingErr()
         return
       }
     } else {
