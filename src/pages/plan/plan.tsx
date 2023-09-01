@@ -248,7 +248,6 @@ function Plan() {
         return
       }
     } else {
-      
       if (new BigNumber(accountBalance).isZero()) {
         setLoading(true)
         setLoadingState("error")
@@ -258,9 +257,7 @@ function Plan() {
           setLoading(false)
         }, 2000);
         return
-      }
-
-      if (!new BigNumber(value).isZero()) {
+      }else{
         try {
           const gas: any = await babyContract?.estimateGas.setFusingTime({ from: account })
           console.log("sendJoin gas", gas)
@@ -309,10 +306,6 @@ function Plan() {
             sendLoadingErr()
           }
         }
-      } else {
-        console.log("err 1")
-        sendLoadingErr()
-        return
       }
     }
     // if (new BigNumber(status1).isLessThanOrEqualTo(status2)) {
