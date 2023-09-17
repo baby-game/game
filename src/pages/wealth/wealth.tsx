@@ -30,12 +30,14 @@ function Wealth() {
     }
     // getReparations
     const getReparations = async () => {
-        let data = await babyContract?.getReparations(account)
-        console.log("getReparations", data)
-        if (data !== undefined) {
-            data[0].amount.toString()
-            setDataList(data.reverse())
+        try {
+            let data = await babyContract?.getReparations(account)
+            console.log("getReparations", data)
+            setDataList(data)
+        } catch (error) {
+            setDataList([])
         }
+
     }
     // getReimburse
     const sendGetReimburse = async (index: number) => {
@@ -85,15 +87,16 @@ function Wealth() {
     }
 
     const ItemEarnings = (item: any) => {
-        const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
+        // const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
+        const timeNow = Math.floor(new Date().getTime() / 1000 / Number(dayTime));
         let returnAmount = "0"
 
-        if(new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())){
-            let amountDay=new BigNumber(timeNow).isLessThan(item.endDayIndex.toString()) ? timeNow:item.endDayIndex.toString();
-            returnAmount=fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(amountDay).minus(item.startDayIndex.toString()).toString()).dividedBy(300).toString(), 18, 3);
+        if (new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())) {
+            let amountDay = new BigNumber(timeNow).isLessThan(item.endDayIndex.toString()) ? timeNow : item.endDayIndex.toString();
+            returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(amountDay).minus(item.startDayIndex.toString()).toString()).dividedBy(300).toString(), 18, 2);
 
-        }else{
-            returnAmount="0"
+        } else {
+            returnAmount = "0"
         }
 
         return returnAmount;
@@ -101,27 +104,28 @@ function Wealth() {
 
     const ItemUnEarnings = (item: any) => {
         let returnAmount = "0"
-        if(new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())){
-            returnAmount=fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(300).plus(item.startDayIndex.toString()).minus(item.endDayIndex.toString())).dividedBy(300).toString(), 18, 3);
-        }else{
-            returnAmount=fromTokenValue(item.amount.toString(), 18, 3);
+        if (new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())) {
+            returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(300).plus(item.startDayIndex.toString()).minus(item.endDayIndex.toString())).dividedBy(300).toString(), 18, 2);
+        } else {
+            returnAmount = fromTokenValue(item.amount.toString(), 18, 2);
         }
 
         return returnAmount
     }
 
-    const ItemNotReleased=(item: any)=>{
-       
-        const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
+    const ItemNotReleased = (item: any) => {
+
+        // const timeNow = new BigNumber(new Date().getTime() / 1000).dividedBy(dayTime).toFixed(0)
+        const timeNow = Math.floor(new Date().getTime() / 1000 / Number(dayTime));
         let returnAmount = "0"
-        if(new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())){
-            let amountDay=new BigNumber(timeNow).isLessThan(item.endDayIndex.toString()) ? timeNow:item.endDayIndex.toString();
-            returnAmount=fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(item.endDayIndex.toString()).minus(amountDay).toString()).dividedBy(300).toString(), 18, 3);
-        }else{
-            returnAmount="0"
+        if (new BigNumber(item.startDayIndex.toString()).isLessThan(item.endDayIndex.toString())) {
+            let amountDay = new BigNumber(timeNow).isLessThan(item.endDayIndex.toString()) ? timeNow : item.endDayIndex.toString();
+            returnAmount = fromTokenValue(new BigNumber(item.amount.toString()).multipliedBy(new BigNumber(item.endDayIndex.toString()).minus(amountDay).toString()).dividedBy(300).toString(), 18, 2);
+        } else {
+            returnAmount = "0"
         }
         return returnAmount
-        
+
     }
     return (<>
         <HeadBar />
@@ -134,7 +138,7 @@ function Wealth() {
             {
                 dataList && dataList.map((item: any, index: number) => {
                     return <div className='bg-white rounded-2xl  mx-3 mb-5 p-3' key={index}>
-                        <h3 className='mainTextColor font-bold text-2xl text-center mb-2'> {t("RebornFortune")}{dataList.length - index} {t("Expect")}</h3>
+                        <h3 className='mainTextColor font-bold text-2xl text-center mb-2'> {t("RebornFortune")}{index + 1} {t("Expect")}</h3>
                         <div>
                             <div className=' flex'>
                                 <div className=' w-52'>
@@ -150,12 +154,12 @@ function Wealth() {
                                                 ItemEarnings(item)
                                             }
                                             <span className=' mx-1'>
-                                            +
+                                                +
                                             </span>
                                             <span className='text-gray-400'>
-                                            {
-                                                ItemNotReleased(item)
-                                            }
+                                                {
+                                                    ItemNotReleased(item)
+                                                }
                                             </span>
                                             <span className=' text-sm ml-2'>USDT</span>
                                         </p>
