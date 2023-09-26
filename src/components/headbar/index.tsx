@@ -225,7 +225,7 @@ function HeadBar({ setOpen }: IHeadBar) {
                   </ListItemButton>
                 } */}
 
-                <ListItemButton onClick={() => {
+                {/* <ListItemButton onClick={() => {
                   navLink("/plan")
                 }}>
                   <img
@@ -235,7 +235,7 @@ function HeadBar({ setOpen }: IHeadBar) {
                     alt=''
                   />
                   <ListItemText className=' ml-2 ' primary={`${t("BabyPlan")}`} />
-                </ListItemButton>
+                </ListItemButton> */}
                 <ListItemButton onClick={() => {
                   navLink("/community")
                 }}>
