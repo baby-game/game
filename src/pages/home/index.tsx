@@ -258,7 +258,7 @@ export default function Home({ }) {
             </div>
           } */}
 
-          {/* <div className=" text-center mt-5">
+          <div className=" text-center mt-5">
             <p>
               <span className=' border-solid border rounded-3xl py-2 px-16 mainTextColor font-bold borderMain cursor-pointer'
                 onClick={() => {
@@ -271,7 +271,7 @@ export default function Home({ }) {
                 }}
               > {t("BabyPlan")} </span>
             </p>
-          </div> */}
+          </div>
 
           <div className=" text-center mt-5">
             <p>
